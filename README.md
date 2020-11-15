@@ -23,3 +23,9 @@ This is an independent and personal project, with no commercial motivation. The 
 - React Native
 - Expo
 - Styled-components
+
+## :computer: Design Preview
+
+Design preview, built on Figma:
+
+<p align=center><img src="_readmeImages/figmaDesign.png" height="500px"></p>
