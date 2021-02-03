@@ -12,6 +12,7 @@ import {
 } from './styles';
 import { Feather } from '@expo/vector-icons';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { useNavigation } from '@react-navigation/native';
 
 import {
   DefaultTheme,
@@ -25,6 +26,8 @@ import logoImg from '../../assets/logo.png';
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+
+  const navigation = useNavigation();
 
   const inputTheme = {
     ...DefaultTheme,
@@ -95,7 +98,7 @@ const Login: React.FC = () => {
               <ButtonText>Entrar</ButtonText>
             </Button>
 
-            <SignUpContainer>
+            <SignUpContainer onPress={ () => {navigation.navigate('SignUp')}}>
               <Feather name='log-in' size={24} color='#9CA9A7' />
               <SignUpText>Criar conta</SignUpText>
             </SignUpContainer>

@@ -6,7 +6,7 @@
 
 Currently in a very early development stage.
 
-The backend is going to be developed after finishing the mobile app pages and navigation.
+A Node API for the application is also being developed. You can check it [here](https://github.com/leonardorib/dailyfit-api).
 
 ## :notebook_with_decorative_cover: About
 
