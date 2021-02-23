@@ -18,9 +18,16 @@ import {
   Provider as PaperProvider,
   configureFonts,
 } from "react-native-paper";
-import { Keyboard, TouchableWithoutFeedback } from "react-native";
+import {
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { Text } from "react-native";
 import logoImg from "../../assets/logo.png";
+import { useNavigation } from "@react-navigation/native";
+import { ScrollView } from "react-native-gesture-handler";
 
 const SignUp: React.FC = () => {
   const [name, setName] = useState("");
@@ -28,6 +35,8 @@ const SignUp: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [passwordConfirmation, setPasswordConfirmation] = useState("");
+
+  const navigation = useNavigation();
 
   const inputTheme = {
     ...DefaultTheme,
@@ -63,73 +72,88 @@ const SignUp: React.FC = () => {
 
   return (
     <PaperProvider theme={DefaultTheme}>
-      <KeyboardAwareScrollView style={{ flex: 1, paddingTop: 60 }}>
-        <TouchableWithoutFeedback
-          style={{ backgroundColor: "#fff", flex: 1, alignItems: "center" }}
-          onPress={Keyboard.dismiss}
-          accessible={false}
-        >
-          <Container>
-            <LogoImage source={logoImg} resizeMode="contain" />
-            <LogoText>
-              daily<Text style={{ color: "#76C7C5" }}>Fit</Text>
-            </LogoText>
+      <KeyboardAvoidingView
+        style={{
+          marginTop: 40,
+          marginBottom: 40,
+        }}
+      >
+        <ScrollView>
+          <TouchableWithoutFeedback
+            style={{
+              backgroundColor: "#fff",
+              flex: 1,
+              alignItems: "center",
+            }}
+            onPress={Keyboard.dismiss}
+            accessible={false}
+          >
+            <Container>
+              <LogoImage source={logoImg} resizeMode="contain" />
+              <LogoText>
+                daily<Text style={{ color: "#76C7C5" }}>Fit</Text>
+              </LogoText>
 
-            <Title>Faça seu cadastro</Title>
-            <Input
-              label="Nome"
-              mode="outlined"
-              autoCapitalize="none"
-              value={name}
-              theme={inputTheme}
-              onChangeText={(text) => setName(text)}
-            />
-            <Input
-              label="Sobrenome"
-              mode="outlined"
-              autoCapitalize="none"
-              value={lastName}
-              theme={inputTheme}
-              onChangeText={(text) => setLastName(text)}
-            />
-            <Input
-              label="E-mail"
-              mode="outlined"
-              autoCapitalize="none"
-              value={email}
-              theme={inputTheme}
-              onChangeText={(text) => setEmail(text)}
-            />
-            <Input
-              label="Senha"
-              mode="outlined"
-              autoCapitalize="none"
-              theme={inputTheme}
-              value={password}
-              secureTextEntry={true}
-              onChangeText={(text) => setPassword(text)}
-            />
-            <Input
-              label="Confirmar senha"
-              mode="outlined"
-              autoCapitalize="none"
-              theme={inputTheme}
-              value={passwordConfirmation}
-              secureTextEntry={true}
-              onChangeText={(text) => setPasswordConfirmation(text)}
-            />
+              <Title>Faça seu cadastro</Title>
+              <Input
+                label="Nome"
+                mode="outlined"
+                autoCapitalize="none"
+                value={name}
+                theme={inputTheme}
+                onChangeText={(text) => setName(text)}
+              />
+              <Input
+                label="Sobrenome"
+                mode="outlined"
+                autoCapitalize="none"
+                value={lastName}
+                theme={inputTheme}
+                onChangeText={(text) => setLastName(text)}
+              />
+              <Input
+                label="E-mail"
+                mode="outlined"
+                autoCapitalize="none"
+                value={email}
+                theme={inputTheme}
+                onChangeText={(text) => setEmail(text)}
+              />
+              <Input
+                label="Senha"
+                mode="outlined"
+                autoCapitalize="none"
+                theme={inputTheme}
+                value={password}
+                secureTextEntry={true}
+                onChangeText={(text) => setPassword(text)}
+              />
+              <Input
+                label="Confirmar senha"
+                mode="outlined"
+                autoCapitalize="none"
+                theme={inputTheme}
+                value={passwordConfirmation}
+                secureTextEntry={true}
+                onChangeText={(text) => setPasswordConfirmation(text)}
+              />
 
-            <Button>
-              <ButtonText>Entrar</ButtonText>
-            </Button>
+              <Button>
+                <ButtonText>Cadastrar</ButtonText>
+              </Button>
 
-            <SignUpContainer>
-              <Feather name="log-in" size={24} color="#9CA9A7" />
-              <SignUpText>Criar conta</SignUpText>
-            </SignUpContainer>
-          </Container>
-        </TouchableWithoutFeedback>
-      </KeyboardAwareScrollView>
+              <SignUpContainer
+                onPress={() => {
+                  navigation.navigate("Login");
+                }}
+              >
+                <Feather name="log-in" size={24} color="#9CA9A7" />
+                <SignUpText>Voltar para o login</SignUpText>
+              </SignUpContainer>
+            </Container>
+          </TouchableWithoutFeedback>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </PaperProvider>
   );
 };

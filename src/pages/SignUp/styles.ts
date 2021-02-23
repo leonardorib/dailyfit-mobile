@@ -1,6 +1,6 @@
-import styled from 'styled-components/native';
-import { TextInput } from 'react-native-paper';
-import { RectButton } from 'react-native-gesture-handler';
+import styled from "styled-components/native";
+import { TextInput } from "react-native-paper";
+import { RectButton } from "react-native-gesture-handler";
 export const Container = styled.View`
   flex: 1;
   align-items: center;
@@ -13,13 +13,13 @@ export const LogoImage = styled.Image`
 `;
 
 export const LogoText = styled.Text`
-  font-family: 'Roboto_700Bold';
+  font-family: "Roboto_700Bold";
   font-size: 40px;
   color: #444540;
 `;
 
 export const Title = styled.Text`
-  font-family: 'Roboto_700Bold';
+  font-family: "Roboto_700Bold";
   margin-top: 20px;
   font-size: 30px;
   margin-bottom: 25px;
@@ -44,7 +44,7 @@ export const Button = styled(RectButton)`
 
 export const ButtonText = styled.Text`
   color: #ffffff;
-  font-family: 'Roboto_700Bold';
+  font-family: "Roboto_700Bold";
   font-size: 20px;
 `;
 
@@ -56,7 +56,7 @@ export const SignUpContainer = styled.TouchableOpacity`
 `;
 
 export const SignUpText = styled.Text`
-  font-family: 'Roboto_400Regular';
+  font-family: "Roboto_400Regular";
   color: #9ca9a7;
   font-size: 18px;
   margin-left: 8px;
