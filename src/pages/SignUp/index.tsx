@@ -41,7 +41,7 @@ const SignUp: React.FC = () => {
     mode: "onChange",
   });
 
-  const onSubmit = (formData: any) => {
+  const onSubmit = (formData: FormData) => {
     console.log(formData);
   };
 
