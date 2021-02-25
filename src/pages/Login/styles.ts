@@ -42,6 +42,12 @@ export const Input = styled(TextInput)`
   margin-bottom: 10px;
 `;
 
+export const ErrorText = styled.Text`
+  margin-top: -2px;
+  margin-bottom: 10px;
+  color: #b00020;
+`;
+
 export const Button = styled(RectButton)`
   width: 80%;
   height: 50px;

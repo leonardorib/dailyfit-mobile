@@ -1,5 +1,5 @@
 Arguments: 
-  /home/leo/.nvm/versions/node/v14.15.4/bin/node /usr/share/yarn/bin/yarn.js add -D @types/react-hook-form
+  /home/leo/.nvm/versions/node/v14.15.4/bin/node /usr/share/yarn/bin/yarn.js add @hookform/resolvers/yup
 
 PATH: 
   /home/leo/.nvm/versions/node/v14.15.4/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/home/leo/Android/Sdk/emulator:/home/leo/Android/Sdk/tools:/home/leo/Android/Sdk/tools/bin:/home/leo/Android/Sdk/platform-tools
@@ -14,8 +14,8 @@ Platform:
   linux x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@types%2freact-hook-form: Not found
-      at Request.params.callback [as _callback] (/usr/share/yarn/lib/cli.js:66988:18)
+  Error: https://registry.yarnpkg.com/@hookform%2fresolvers/yup: Request "https://registry.yarnpkg.com/@hookform%2fresolvers/yup" returned a 405
+      at Request.params.callback [as _callback] (/usr/share/yarn/lib/cli.js:66997:18)
       at Request.self.callback (/usr/share/yarn/lib/cli.js:140749:22)
       at Request.emit (events.js:315:20)
       at Request.<anonymous> (/usr/share/yarn/lib/cli.js:141721:10)

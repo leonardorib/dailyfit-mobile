@@ -4,6 +4,8 @@ import { useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { useForm, Controller } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import api from "../../services/api";
 
@@ -17,6 +19,7 @@ import {
   TouchableWithoutFeedback,
   LogoImage,
   Input,
+  ErrorText,
   Title,
   LogoText,
   Button,
@@ -35,9 +38,26 @@ type FormData = {
   passwordConfirmation: string;
 };
 
+const signUpSchema = yup.object().shape({
+  name: yup.string().required("Nome obrigatório"),
+  lastName: yup.string().required("Sobrenome obrigatório"),
+  email: yup
+    .string()
+    .email("Digite um email válido")
+    .required("E-mail obrigatório"),
+  password: yup
+    .string()
+    .min(5, "A senha deve ter no mínimo 5 caracteres")
+    .required("Senha obrigatória"),
+  passwordConfirmation: yup
+    .string()
+    .oneOf([yup.ref("password"), null], "Deve ser igual à senha")
+    .required("Confirmação de senha obrigatória"),
+});
+
 const SignUp: React.FC = () => {
-  const { control, handleSubmit } = useForm<FormData>({
-    mode: "onChange",
+  const { control, handleSubmit, errors } = useForm<FormData>({
+    resolver: yupResolver(signUpSchema),
   });
 
   const onSubmit = (formData: FormData) => {
@@ -77,10 +97,15 @@ const SignUp: React.FC = () => {
                         value={value}
                         theme={inputTheme}
                         onChangeText={(value) => onChange(value)}
+                        error={!!errors.name?.message}
                       />
                     );
                   }}
                 />
+
+                {errors.name?.message ? (
+                  <ErrorText>{errors.name?.message}</ErrorText>
+                ) : null}
 
                 <Controller
                   control={control}
@@ -95,10 +120,14 @@ const SignUp: React.FC = () => {
                         value={value}
                         theme={inputTheme}
                         onChangeText={(value) => onChange(value)}
+                        error={!!errors.lastName?.message}
                       />
                     );
                   }}
                 />
+                {errors.lastName?.message ? (
+                  <ErrorText>{errors.lastName?.message}</ErrorText>
+                ) : null}
 
                 <Controller
                   control={control}
@@ -113,10 +142,14 @@ const SignUp: React.FC = () => {
                         value={value}
                         theme={inputTheme}
                         onChangeText={(value) => onChange(value)}
+                        error={!!errors.email?.message}
                       />
                     );
                   }}
                 />
+                {errors.email?.message ? (
+                  <ErrorText>{errors.email?.message}</ErrorText>
+                ) : null}
 
                 <Controller
                   control={control}
@@ -132,10 +165,14 @@ const SignUp: React.FC = () => {
                         value={value}
                         secureTextEntry={true}
                         onChangeText={(value) => onChange(value)}
+                        error={!!errors.password?.message}
                       />
                     );
                   }}
                 />
+                {errors.password?.message ? (
+                  <ErrorText>{errors.password?.message}</ErrorText>
+                ) : null}
 
                 <Controller
                   control={control}
@@ -151,10 +188,14 @@ const SignUp: React.FC = () => {
                         value={value}
                         secureTextEntry={true}
                         onChangeText={(value) => onChange(value)}
+                        error={!!errors.passwordConfirmation?.message}
                       />
                     );
                   }}
                 />
+                {errors.passwordConfirmation?.message ? (
+                  <ErrorText>{errors.passwordConfirmation?.message}</ErrorText>
+                ) : null}
 
                 <Button
                   onPress={() => {
@@ -169,7 +210,7 @@ const SignUp: React.FC = () => {
                     navigation.navigate("Login");
                   }}
                 >
-                  <Feather name="log-in" size={24} color="#9CA9A7" />
+                  <Feather name="arrow-left" size={24} color="#9CA9A7" />
                   <SignUpText>Voltar para o login</SignUpText>
                 </SignUpContainer>
               </ContentContainer>

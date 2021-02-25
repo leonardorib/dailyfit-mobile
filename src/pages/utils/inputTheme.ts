@@ -9,6 +9,7 @@ const inputTheme = {
     placeholder: "#a09e9e",
     background: "#fcfcfc",
   },
+
   roundess: 0.4,
   fonts: configureFonts({
     default: {

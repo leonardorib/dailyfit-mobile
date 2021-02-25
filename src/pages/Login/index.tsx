@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Keyboard, Platform, Text } from "react-native";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useForm, Controller } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 
 import logoImg from "../../assets/logo.png";
 
@@ -14,6 +16,7 @@ import {
   ContentContainer,
   LogoImage,
   Input,
+  ErrorText,
   Title,
   LogoText,
   Button,
@@ -30,8 +33,18 @@ type FormData = {
   password: string;
 };
 
+const loginSchema = yup.object().shape({
+  email: yup
+    .string()
+    .email("Digite um email válido")
+    .required("E-mail obrigatório"),
+  password: yup.string().required("Digite sua senha"),
+});
+
 const Login: React.FC = () => {
-  const { control, handleSubmit } = useForm<FormData>();
+  const { control, handleSubmit, errors } = useForm<FormData>({
+    resolver: yupResolver(loginSchema),
+  });
 
   const navigation = useNavigation();
 
@@ -58,6 +71,7 @@ const Login: React.FC = () => {
                 </LogoText>
 
                 <Title>Faça seu login</Title>
+
                 <Controller
                   control={control}
                   name="email"
@@ -71,10 +85,14 @@ const Login: React.FC = () => {
                         value={value}
                         theme={inputTheme}
                         onChangeText={(value) => onChange(value)}
+                        error={!!errors.email?.message}
                       />
                     );
                   }}
                 />
+                {errors.email?.message ? (
+                  <ErrorText>{errors.email?.message}</ErrorText>
+                ) : null}
 
                 <Controller
                   control={control}
@@ -90,10 +108,15 @@ const Login: React.FC = () => {
                         value={value}
                         secureTextEntry={true}
                         onChangeText={(value) => onChange(value)}
+                        error={!!errors.password?.message}
                       />
                     );
                   }}
                 />
+
+                {errors.password?.message ? (
+                  <ErrorText>{errors.password?.message}</ErrorText>
+                ) : null}
 
                 <Button
                   onPress={() => {
