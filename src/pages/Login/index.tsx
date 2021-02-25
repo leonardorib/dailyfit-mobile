@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   Container,
   LogoImage,
@@ -11,14 +11,9 @@ import {
   SignUpText,
 } from "./styles";
 import { Feather } from "@expo/vector-icons";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { useNavigation } from "@react-navigation/native";
 
-import {
-  DefaultTheme,
-  Provider as PaperProvider,
-  configureFonts,
-} from "react-native-paper";
+import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import {
   Keyboard,
   KeyboardAvoidingView,
@@ -28,49 +23,27 @@ import { Text } from "react-native";
 import logoImg from "../../assets/logo.png";
 import { ScrollView } from "react-native-gesture-handler";
 
+import { useForm, Controller } from "react-hook-form";
+
+import inputTheme from "../utils/inputTheme";
+
+type FormData = {
+  email: string;
+  password: string;
+};
+
 const Login: React.FC = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const { control, handleSubmit } = useForm<FormData>();
 
   const navigation = useNavigation();
 
-  const inputTheme = {
-    ...DefaultTheme,
-    dark: false,
-    colors: {
-      primary: "#39AFB0",
-      text: "#444540",
-      placeholder: "#a09e9e",
-      background: "#fcfcfc",
-    },
-    roundess: 0.4,
-    fonts: configureFonts({
-      default: {
-        regular: {
-          fontFamily: "Roboto_400Regular",
-          fontWeight: "normal",
-        },
-        medium: {
-          fontFamily: "Roboto_500Medium",
-          fontWeight: "normal",
-        },
-        light: {
-          fontFamily: "Roboto_400Regular",
-          fontWeight: "normal",
-        },
-        thin: {
-          fontFamily: "Roboto_400Regular",
-          fontWeight: "normal",
-        },
-      },
-    }),
+  const onSubmit = (formData: FormData) => {
+    console.log(formData);
   };
 
   return (
     <PaperProvider theme={DefaultTheme}>
-      <KeyboardAvoidingView
-        style={{ flex: 1, marginTop: 40, marginBottom: 40 }}
-      >
+      <KeyboardAvoidingView>
         <ScrollView>
           <TouchableWithoutFeedback
             style={{ backgroundColor: "#fff", flex: 1, alignItems: "center" }}
@@ -84,25 +57,48 @@ const Login: React.FC = () => {
               </LogoText>
 
               <Title>Faça seu login</Title>
-              <Input
-                label="E-mail"
-                mode="outlined"
-                autoCapitalize="none"
-                value={email}
-                theme={inputTheme}
-                onChangeText={(text) => setEmail(text)}
-              />
-              <Input
-                label="Senha"
-                mode="outlined"
-                autoCapitalize="none"
-                theme={inputTheme}
-                value={password}
-                secureTextEntry={true}
-                onChangeText={(text) => setPassword(text)}
+              <Controller
+                control={control}
+                name="email"
+                defaultValue=""
+                render={({ value, onChange }) => {
+                  return (
+                    <Input
+                      label="E-mail"
+                      mode="outlined"
+                      autoCapitalize="none"
+                      value={value}
+                      theme={inputTheme}
+                      onChangeText={(value) => onChange(value)}
+                    />
+                  );
+                }}
               />
 
-              <Button>
+              <Controller
+                control={control}
+                name="password"
+                defaultValue=""
+                render={({ value, onChange }) => {
+                  return (
+                    <Input
+                      label="Senha"
+                      mode="outlined"
+                      autoCapitalize="none"
+                      theme={inputTheme}
+                      value={value}
+                      secureTextEntry={true}
+                      onChangeText={(value) => onChange(value)}
+                    />
+                  );
+                }}
+              />
+
+              <Button
+                onPress={() => {
+                  handleSubmit(onSubmit)();
+                }}
+              >
                 <ButtonText>Entrar</ButtonText>
               </Button>
 
