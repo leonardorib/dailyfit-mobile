@@ -1,12 +1,20 @@
 import styled from "styled-components/native";
 import { TextInput } from "react-native-paper";
 import { RectButton } from "react-native-gesture-handler";
-export const Container = styled.View`
-  flex: 1;
+
+export const SafeAreaView = styled.SafeAreaView``;
+
+export const KeyboardAvoidingView = styled.KeyboardAvoidingView``;
+
+export const ScrollView = styled.ScrollView``;
+
+export const TouchableWithoutFeedback = styled.TouchableWithoutFeedback``;
+
+export const ContentContainer = styled.View`
+  display: flex;
   align-items: center;
-  justify-content: center;
   background-color: #fff;
-  margin-top: 40px;
+  margin-top: 20px;
   margin-bottom: 40px;
 `;
 
