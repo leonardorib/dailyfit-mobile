@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Keyboard, Platform, Text } from "react-native";
+import { Alert, Keyboard, Platform, Text } from "react-native";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+
+import api from "../../services/api";
 
 import logoImg from "../../assets/logo.png";
 
@@ -50,6 +52,15 @@ const Login: React.FC = () => {
 
   const onSubmit = (formData: FormData) => {
     console.log(formData);
+    api
+      .post("/auth", formData)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        Alert.alert("Erro no login", "Tente novamente");
+        console.log(error);
+      });
   };
 
   return (
