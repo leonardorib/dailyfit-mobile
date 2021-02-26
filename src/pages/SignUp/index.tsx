@@ -1,5 +1,5 @@
 import React from "react";
-import { Keyboard, Platform, Text } from "react-native";
+import { Keyboard, Platform, Text, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { Feather } from "@expo/vector-icons";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
@@ -31,7 +31,7 @@ import {
 } from "./styles";
 
 type FormData = {
-  name: string;
+  firstName: string;
   lastName: string;
   email: string;
   password: string;
@@ -39,7 +39,7 @@ type FormData = {
 };
 
 const signUpSchema = yup.object().shape({
-  name: yup.string().required("Nome obrigatório"),
+  firstName: yup.string().required("Nome obrigatório"),
   lastName: yup.string().required("Sobrenome obrigatório"),
   email: yup
     .string()
@@ -60,11 +60,31 @@ const SignUp: React.FC = () => {
     resolver: yupResolver(signUpSchema),
   });
 
-  const onSubmit = (formData: FormData) => {
-    console.log(formData);
-  };
-
   const navigation = useNavigation();
+
+  const onSubmit = (formData: FormData) => {
+    api
+      .post("/users", formData)
+      .then((response) => {
+        Alert.alert(
+          "Cadastro realizado com sucesso!",
+          "Você já pode logar ;)",
+          [
+            {
+              text: "OK",
+              onPress: () => {
+                navigation.navigate("Login");
+              },
+            },
+          ]
+        );
+        console.log(response.data);
+      })
+      .catch((error) => {
+        Alert.alert("Erro no cadastro", "Tente novamente");
+        console.log(error);
+      });
+  };
 
   return (
     <PaperProvider theme={DefaultTheme}>
@@ -87,7 +107,7 @@ const SignUp: React.FC = () => {
                 <Controller
                   control={control}
                   defaultValue=""
-                  name="name"
+                  name="firstName"
                   render={({ onChange, value }) => {
                     return (
                       <Input
@@ -97,14 +117,14 @@ const SignUp: React.FC = () => {
                         value={value}
                         theme={inputTheme}
                         onChangeText={(value) => onChange(value)}
-                        error={!!errors.name?.message}
+                        error={!!errors.firstName?.message}
                       />
                     );
                   }}
                 />
 
-                {errors.name?.message ? (
-                  <ErrorText>{errors.name?.message}</ErrorText>
+                {errors.firstName?.message ? (
+                  <ErrorText>{errors.firstName?.message}</ErrorText>
                 ) : null}
 
                 <Controller
