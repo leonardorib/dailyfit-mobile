@@ -1,34 +1,13 @@
-import React from "react";
-import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
-import Login from "../pages/Login";
-import SignUp from "../pages/SignUp";
-import DailyDiet from "../pages/DailyDiet";
+import React, { useContext } from "react";
 
-const Stack = createStackNavigator();
+import PrivateRoutes from "./private.routes";
+import PublicRoutes from "./public.routes";
 
-const isAuthenticated = false;
+import AuthContext from "../contexts/auth";
 
 const Routes: React.FC = () => {
-  return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-        cardStyle: { backgroundColor: "#fff" },
-      }}
-    >
-      {isAuthenticated ? (
-        <>
-          <Stack.Screen name="DailyDiet" component={DailyDiet} />
-        </>
-      ) : (
-        <>
-          <Stack.Screen name="Login" component={Login} />
-          <Stack.Screen name="SignUp" component={SignUp} />
-        </>
-      )}
-    </Stack.Navigator>
-  );
+  const { user } = useContext(AuthContext);
+  return user ? <PrivateRoutes /> : <PublicRoutes />;
 };
 
 export default Routes;

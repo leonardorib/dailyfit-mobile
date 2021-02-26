@@ -1,8 +1,9 @@
-import { StatusBar } from "expo-status-bar";
 import React from "react";
+import { StatusBar } from "expo-status-bar";
 import { AppLoading } from "expo";
 import { NavigationContainer } from "@react-navigation/native";
 import Routes from "./src/routes";
+import { AuthProvider } from "./src/contexts/auth";
 
 import {
   useFonts,
@@ -23,8 +24,10 @@ export default function App() {
   }
   return (
     <NavigationContainer>
-      <Routes />
-      <StatusBar style="dark" />
+      <AuthProvider>
+        <Routes />
+        <StatusBar style="dark" />
+      </AuthProvider>
     </NavigationContainer>
   );
 }
