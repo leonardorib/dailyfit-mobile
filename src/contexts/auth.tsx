@@ -1,6 +1,7 @@
-import React, { createContext, useState } from "react";
+import React, { createContext, useState, useEffect } from "react";
 import { Alert } from "react-native";
 import api from "../services/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type User = {
   id: string;
@@ -17,7 +18,6 @@ interface SignInData {
 interface AuthContextData {
   user: User | undefined;
   token: string;
-
   handleSignIn(signInData: SignInData): void;
   handleSignOut(): void;
 }
@@ -38,12 +38,24 @@ export const AuthProvider: React.FC = ({ children }) => {
   const handleSignIn = (signInData: SignInData) => {
     api
       .post("/auth", signInData)
-      .then((response) => {
+      .then(async (response) => {
         console.log(response.data);
         setAuthState({
           user: response.data.user,
           token: response.data.token,
         });
+
+        await AsyncStorage.setItem(
+          "@dailyFit:user",
+          JSON.stringify(response.data.user)
+        );
+
+        await AsyncStorage.setItem(
+          "@dailyFit:token",
+          JSON.stringify(response.data.token)
+        );
+
+        api.defaults.headers["Authorization"] = `Bearer ${response.data.token}`;
       })
       .catch((error) => {
         Alert.alert("Erro no login", "Tente novamente");
@@ -51,12 +63,32 @@ export const AuthProvider: React.FC = ({ children }) => {
       });
   };
 
-  const handleSignOut = () => {
+  const handleSignOut = async () => {
     setAuthState({
       user: undefined,
       token: "",
     });
+
+    await AsyncStorage.multiRemove(["@dailyFit:user", "@dailyFit:token"]);
   };
+
+  useEffect(() => {
+    const loadStorageData = async () => {
+      const storedUser = await AsyncStorage.getItem("@dailyFit:user");
+      const storedToken = await AsyncStorage.getItem("@dailyFit:token");
+
+      if (storedUser && storedToken) {
+        setAuthState({
+          user: JSON.parse(storedUser),
+          token: storedToken,
+        });
+
+        api.defaults.headers["Authorization"] = `Bearer ${storedToken}`;
+      }
+    };
+
+    loadStorageData();
+  }, []);
 
   return (
     <AuthContext.Provider
