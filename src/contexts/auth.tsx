@@ -61,10 +61,7 @@ export const AuthProvider: React.FC = ({ children }) => {
           })
         );
 
-        await AsyncStorage.setItem(
-          "@dailyFit:token",
-          JSON.stringify(response.data.token)
-        );
+        await AsyncStorage.setItem("@dailyFit:token", response.data.token);
 
         api.defaults.headers["Authorization"] = `Bearer ${response.data.token}`;
       })
