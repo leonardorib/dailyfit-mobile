@@ -1,23 +1,31 @@
-import React, { useContext } from "react";
-import { View, Text, Button } from "react-native";
-import AuthContext from "../../contexts/auth";
+import React from "react";
+import { View, Text, Button, Platform } from "react-native";
+
+import { SafeAreaView, KeyboardAvoidingView, ScrollView } from "./styles";
+
+import Header from "../../components/Header";
+import Meal from "../../components/Meal";
 
 const DailyDiet: React.FC = () => {
-  const { handleSignOut } = useContext(AuthContext);
   return (
-    <View
-      style={{
-        display: "flex",
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-      }}
-    >
-      <Text style={{ fontSize: 40, marginBottom: 200 }}>
-        DailyDiet Dashboard
-      </Text>
-      <Button title="Logout" onPress={handleSignOut} />
-    </View>
+    <SafeAreaView>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <ScrollView>
+          <View
+            style={{
+              display: "flex",
+              flex: 1,
+              alignItems: "center",
+            }}
+          >
+            <Header />
+            <Meal />
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 
