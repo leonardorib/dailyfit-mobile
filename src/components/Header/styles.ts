@@ -3,25 +3,27 @@ import { StyleSheet } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 
 export const Container = styled.View`
-  width: 100%;
+  width: 99%;
 
   margin-top: 5px;
   align-items: center;
   flex-direction: row;
   background-color: #76c7c5;
   padding: 20px 20px 20px 20px;
+  border-radius: 8px;
 `;
 
 export const shadowStyles = StyleSheet.create({
   headerShadow: {
-    elevation: 10,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 5,
+      height: 7,
     },
-    shadowOpacity: 0.34,
-    shadowRadius: 6.27,
+    shadowOpacity: 0.43,
+    shadowRadius: 9.51,
+
+    elevation: 15,
   },
 });
 
