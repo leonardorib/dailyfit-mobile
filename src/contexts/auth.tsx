@@ -53,7 +53,12 @@ export const AuthProvider: React.FC = ({ children }) => {
 
         await AsyncStorage.setItem(
           "@dailyFit:user",
-          JSON.stringify(response.data.user)
+          JSON.stringify({
+            id: userReturned.id,
+            email: userReturned.email,
+            firstName: userReturned.first_name,
+            lastName: userReturned.last_name,
+          })
         );
 
         await AsyncStorage.setItem(
