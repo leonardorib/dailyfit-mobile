@@ -40,8 +40,14 @@ export const AuthProvider: React.FC = ({ children }) => {
       .post("/auth", signInData)
       .then(async (response) => {
         console.log(response.data);
+        const userReturned = response.data.user;
         setAuthState({
-          user: response.data.user,
+          user: {
+            id: userReturned.id,
+            email: userReturned.email,
+            firstName: userReturned.first_name,
+            lastName: userReturned.last_name,
+          },
           token: response.data.token,
         });
 
