@@ -1,20 +1,29 @@
 import React from "react";
+import { createDrawerNavigator } from "@react-navigation/drawer";
+
 import DailyDiet from "../pages/DailyDiet";
+import Profile from "../pages/Profile";
+import CustomDrawer from "../components/Drawer";
+import { DrawerHeaderProps } from "@react-navigation/drawer/lib/typescript/src/types";
+import Header from "../components/Header";
 
-import { createStackNavigator } from "@react-navigation/stack";
-
-const PrivateStack = createStackNavigator();
+const PrivateRoutesDrawer = createDrawerNavigator();
 
 const PrivateRoutes: React.FC = () => {
   return (
-    <PrivateStack.Navigator
+    <PrivateRoutesDrawer.Navigator
       screenOptions={{
         headerShown: false,
-        cardStyle: { backgroundColor: "#fff" },
+      }}
+      initialRouteName="DailyDiet"
+      drawerPosition="right"
+      drawerContent={(props) => {
+        return <CustomDrawer {...props} />;
       }}
     >
-      <PrivateStack.Screen name="DailyDiet" component={DailyDiet} />
-    </PrivateStack.Navigator>
+      <PrivateRoutesDrawer.Screen name="DailyDiet" component={DailyDiet} />
+      <PrivateRoutesDrawer.Screen name="Profile" component={Profile} />
+    </PrivateRoutesDrawer.Navigator>
   );
 };
 

@@ -6,7 +6,7 @@ import { SafeAreaView, KeyboardAvoidingView, ScrollView } from "./styles";
 import Header from "../../components/Header";
 import Meal from "../../components/Meal";
 
-const DailyDiet: React.FC = () => {
+const Profile: React.FC = () => {
   return (
     <SafeAreaView>
       <KeyboardAvoidingView
@@ -21,9 +21,8 @@ const DailyDiet: React.FC = () => {
             }}
           >
             <Header />
-            <Text style={{ fontSize: 20, marginTop: 40 }}>Daily Diet</Text>
 
-            <Meal />
+            <Text style={{ fontSize: 30 }}>Seu Perfil</Text>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -31,4 +30,4 @@ const DailyDiet: React.FC = () => {
   );
 };
 
-export default DailyDiet;
+export default Profile;
