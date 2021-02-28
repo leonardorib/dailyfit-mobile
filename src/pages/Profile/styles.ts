@@ -1,9 +1,9 @@
-import { StatusBar } from "react-native";
+import { getStatusBarHeight } from "react-native-status-bar-height";
 import styled from "styled-components/native";
 
 export const SafeAreaView = styled.SafeAreaView`
   flex: 1;
-  margin-top: ${StatusBar.currentHeight}px;
+  margin-top: ${getStatusBarHeight()}px;
 `;
 
 export const KeyboardAvoidingView = styled.KeyboardAvoidingView`
