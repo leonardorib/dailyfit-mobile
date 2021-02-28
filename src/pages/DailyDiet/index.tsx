@@ -1,9 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
-import { Keyboard, Platform } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Alert, Keyboard, Platform, Text } from "react-native";
 import { startOfDay, endOfDay, subDays, addDays, format } from "date-fns";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { useForm, Controller } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
 import api from "../../services/api";
 
 import {
@@ -26,6 +28,7 @@ import {
   AddMealModalInnerView,
   AddMealModalText,
   AddMealModalInput,
+  ErrorText,
   AddMealModalButtonsView,
   AddMealModalButton,
   AddMealModalButtonText,
@@ -40,10 +43,43 @@ import {
   TouchableWithoutFeedback,
 } from "react-native-gesture-handler";
 
+interface AddMealForm {
+  mealName: string;
+}
+
+const addMealSchema = yup.object().shape({
+  mealName: yup.string().required("Informe um nome!"),
+});
+
 const DailyDiet: React.FC = () => {
+  const {
+    control: controlAddMeal,
+    handleSubmit: handleSubmitAddMeal,
+    errors: errorsAddMeal,
+    getValues: getAddMealValue,
+  } = useForm<AddMealForm>({
+    resolver: yupResolver(addMealSchema),
+  });
+
   const [selectedDate, setSelectedDate] = useState(new Date(Date.now()));
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isAddMealModalVisible, setIsAddMealModalVisible] = useState(false);
+
+  const onSubmitAddMeal = (formData: AddMealForm) => {
+    console.log(formData);
+    api
+      .post("meals", {
+        name: formData.mealName,
+        date: new Date(),
+      })
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        Alert.alert("Erro ao criar refeição", "Tente novamente");
+        console.log(error.message);
+      });
+  };
 
   useEffect(() => {
     api
@@ -64,9 +100,10 @@ const DailyDiet: React.FC = () => {
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <Header />
         <ScrollView>
           <Container>
+            <Header />
+
             <DateSelectionRow style={shadowStyles.style}>
               <ArrowLeftButton
                 onPress={() => {
@@ -156,9 +193,39 @@ const DailyDiet: React.FC = () => {
             Keyboard.dismiss();
           }}
         >
-          <AddMealModalInnerView>
+          <AddMealModalInnerView
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+          >
             <AddMealModalText>Dê um nome para sua refeição</AddMealModalText>
-            <AddMealModalInput autoFocus={true} />
+            <Controller
+              name="mealName"
+              defaultValue=""
+              control={controlAddMeal}
+              render={({ value, onChange }) => {
+                return (
+                  <>
+                    <AddMealModalInput
+                      autoFocus={true}
+                      value={value}
+                      onChangeText={(value) => onChange(value)}
+                      returnKeyType="send"
+                      onSubmitEditing={() => {
+                        handleSubmitAddMeal(onSubmitAddMeal)();
+
+                        if (value.length > 0) {
+                          setIsAddMealModalVisible(false);
+                        }
+                      }}
+                    />
+                  </>
+                );
+              }}
+            />
+
+            {errorsAddMeal.mealName?.message && (
+              <ErrorText>{errorsAddMeal.mealName?.message}</ErrorText>
+            )}
+
             <AddMealModalButtonsView>
               <AddMealModalButton
                 onPress={() => {
@@ -169,7 +236,10 @@ const DailyDiet: React.FC = () => {
               </AddMealModalButton>
               <AddMealModalButton
                 onPress={() => {
-                  setIsAddMealModalVisible(false);
+                  handleSubmitAddMeal(onSubmitAddMeal)();
+                  if (getAddMealValue("mealName").length > 0) {
+                    setIsAddMealModalVisible(false);
+                  }
                 }}
               >
                 <AddMealModalButtonText>Confirmar</AddMealModalButtonText>

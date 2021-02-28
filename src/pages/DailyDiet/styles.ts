@@ -105,13 +105,14 @@ export const AddMealButtonText = styled.Text`
   margin-left: 20px;
 `;
 
-export const AddMealModalInnerView = styled.View`
+export const AddMealModalInnerView = styled.KeyboardAvoidingView`
   background-color: #fff;
   width: 90%;
   align-items: center;
   height: 200px;
   border-radius: 10px;
   align-self: center;
+  margin-bottom: 30px;
 `;
 
 export const AddMealModalText = styled.Text`
@@ -132,6 +133,13 @@ export const AddMealModalInput = styled.TextInput`
   padding: 0 8px 0 8px;
   font-size: 16px;
   font-family: Roboto_400Regular;
+  color: #444540;
+`;
+
+export const ErrorText = styled.Text`
+  margin-top: 5px;
+  margin-bottom: -18px;
+  font-size: 14px;
   color: #444540;
 `;
 
