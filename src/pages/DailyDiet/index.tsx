@@ -70,7 +70,7 @@ const DailyDiet: React.FC = () => {
     api
       .post("meals", {
         name: formData.mealName,
-        date: new Date(),
+        date: selectedDate,
       })
       .then((response) => {
         console.log(response.data);
