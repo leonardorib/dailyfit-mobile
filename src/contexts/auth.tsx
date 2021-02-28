@@ -90,7 +90,6 @@ export const AuthProvider: React.FC = ({ children }) => {
           user: JSON.parse(storedUser),
           token: storedToken,
         });
-
         api.defaults.headers["Authorization"] = `Bearer ${storedToken}`;
       }
     };
