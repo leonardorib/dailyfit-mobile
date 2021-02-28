@@ -16,6 +16,13 @@ import {
   DateText,
   ArrowLeftButton,
   ArrowRightButton,
+  TotalConsumption,
+  TotalConsumptionTitle,
+  NutrientsOutterBox,
+  NutrientInnerBox,
+  NutrientsText,
+  AddMealButton,
+  AddMealText,
   shadowStyles,
 } from "./styles";
 
@@ -48,7 +55,7 @@ const DailyDiet: React.FC = () => {
         <ScrollView>
           <Container>
             <Header />
-            <DateSelectionRow style={shadowStyles.dateSelectionShadow}>
+            <DateSelectionRow style={shadowStyles.style}>
               <ArrowLeftButton
                 onPress={() => {
                   setSelectedDate(subDays(selectedDate, 1));
@@ -95,9 +102,30 @@ const DailyDiet: React.FC = () => {
               />
             )}
 
+            <TotalConsumption style={shadowStyles.style}>
+              <TotalConsumptionTitle>Total: 0 calorias</TotalConsumptionTitle>
+              <NutrientsOutterBox>
+                <NutrientInnerBox>
+                  <NutrientsText>Carboidratos</NutrientsText>
+                  <NutrientsText>0 g</NutrientsText>
+                </NutrientInnerBox>
+                <NutrientInnerBox>
+                  <NutrientsText>Proteínas</NutrientsText>
+                  <NutrientsText>0 g</NutrientsText>
+                </NutrientInnerBox>
+                <NutrientInnerBox>
+                  <NutrientsText>Gorduras</NutrientsText>
+                  <NutrientsText>0 g</NutrientsText>
+                </NutrientInnerBox>
+              </NutrientsOutterBox>
+            </TotalConsumption>
             <Meal />
           </Container>
         </ScrollView>
+        <AddMealButton style={shadowStyles.style}>
+          <AntDesign name="pluscircleo" size={40} color="#76c7c5" />
+          <AddMealText>Adicionar refeição</AddMealText>
+        </AddMealButton>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
