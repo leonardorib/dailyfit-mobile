@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import { Platform } from "react-native";
+import React, { useEffect, useRef, useState } from "react";
+import { Keyboard, Platform } from "react-native";
 import { startOfDay, endOfDay, subDays, addDays, format } from "date-fns";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { AntDesign, Feather } from "@expo/vector-icons";
-
+import { useForm, Controller } from "react-hook-form";
 import api from "../../services/api";
 
 import {
@@ -22,16 +22,28 @@ import {
   NutrientInnerBox,
   NutrientsText,
   AddMealButton,
-  AddMealText,
+  AddMealButtonText,
+  AddMealModalInnerView,
+  AddMealModalText,
+  AddMealModalInput,
+  AddMealModalButtonsView,
+  AddMealModalButton,
+  AddMealModalButtonText,
   shadowStyles,
 } from "./styles";
 
 import Header from "../../components/Header";
 import Meal from "../../components/Meal";
+import { Modal } from "react-native-paper";
+import {
+  TextInput,
+  TouchableWithoutFeedback,
+} from "react-native-gesture-handler";
 
 const DailyDiet: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(new Date(Date.now()));
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [isAddMealModalVisible, setIsAddMealModalVisible] = useState(false);
 
   useEffect(() => {
     api
@@ -52,9 +64,9 @@ const DailyDiet: React.FC = () => {
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
+        <Header />
         <ScrollView>
           <Container>
-            <Header />
             <DateSelectionRow style={shadowStyles.style}>
               <ArrowLeftButton
                 onPress={() => {
@@ -122,11 +134,50 @@ const DailyDiet: React.FC = () => {
             <Meal />
           </Container>
         </ScrollView>
-        <AddMealButton style={shadowStyles.style}>
+
+        <AddMealButton
+          style={shadowStyles.style}
+          onPress={() => {
+            setIsAddMealModalVisible(true);
+          }}
+        >
           <AntDesign name="pluscircleo" size={40} color="#76c7c5" />
-          <AddMealText>Adicionar refeição</AddMealText>
+          <AddMealButtonText>Adicionar refeição</AddMealButtonText>
         </AddMealButton>
       </KeyboardAvoidingView>
+      <Modal
+        visible={isAddMealModalVisible}
+        onDismiss={() => {
+          setIsAddMealModalVisible(false);
+        }}
+      >
+        <TouchableWithoutFeedback
+          onPress={() => {
+            Keyboard.dismiss();
+          }}
+        >
+          <AddMealModalInnerView>
+            <AddMealModalText>Dê um nome para sua refeição</AddMealModalText>
+            <AddMealModalInput autoFocus={true} />
+            <AddMealModalButtonsView>
+              <AddMealModalButton
+                onPress={() => {
+                  setIsAddMealModalVisible(false);
+                }}
+              >
+                <AddMealModalButtonText>Cancelar</AddMealModalButtonText>
+              </AddMealModalButton>
+              <AddMealModalButton
+                onPress={() => {
+                  setIsAddMealModalVisible(false);
+                }}
+              >
+                <AddMealModalButtonText>Confirmar</AddMealModalButtonText>
+              </AddMealModalButton>
+            </AddMealModalButtonsView>
+          </AddMealModalInnerView>
+        </TouchableWithoutFeedback>
+      </Modal>
     </SafeAreaView>
   );
 };
