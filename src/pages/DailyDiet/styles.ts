@@ -64,6 +64,7 @@ export const TotalConsumption = styled.View`
   border-radius: 5px;
   padding: 12px 0 12px 0;
   margin-top: 5px;
+  margin-bottom: 8px;
 `;
 
 export const TotalConsumptionTitle = styled.Text`

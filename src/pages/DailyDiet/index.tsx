@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Keyboard, Platform, Text } from "react-native";
+import { Alert, Keyboard, Platform, Text, View } from "react-native";
 import { startOfDay, endOfDay, subDays, addDays, format } from "date-fns";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { AntDesign, Feather } from "@expo/vector-icons";
@@ -43,6 +43,36 @@ import {
   TouchableWithoutFeedback,
 } from "react-native-gesture-handler";
 
+interface IMealFood {
+  id: string;
+  name: string;
+  quantity: number;
+  quantity_unit: string;
+  energy_kcal: number;
+  carbs: number;
+  proteins: number;
+  fats: number;
+}
+
+interface IMeal {
+  id: string;
+  name: string;
+  date: Date;
+  energy_kcal: number;
+  carbs: number;
+  proteins: number;
+  fats: number;
+  foods: IMealFood[];
+}
+
+interface IMeals {
+  energy_kcal: number;
+  carbs: number;
+  proteins: number;
+  fats: number;
+  meals: IMeal[];
+}
+
 interface AddMealForm {
   mealName: string;
 }
@@ -52,6 +82,18 @@ const addMealSchema = yup.object().shape({
 });
 
 const DailyDiet: React.FC = () => {
+  const [selectedDate, setSelectedDate] = useState(new Date(Date.now()));
+
+  const [mealsState, setMealsState] = useState<IMeals>({
+    energy_kcal: 0,
+    carbs: 0,
+    proteins: 0,
+    fats: 0,
+    meals: [],
+  });
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [isAddMealModalVisible, setIsAddMealModalVisible] = useState(false);
+
   const {
     control: controlAddMeal,
     handleSubmit: handleSubmitAddMeal,
@@ -61,10 +103,6 @@ const DailyDiet: React.FC = () => {
     resolver: yupResolver(addMealSchema),
   });
 
-  const [selectedDate, setSelectedDate] = useState(new Date(Date.now()));
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const [isAddMealModalVisible, setIsAddMealModalVisible] = useState(false);
-
   const onSubmitAddMeal = (formData: AddMealForm) => {
     console.log(formData);
     api
@@ -73,7 +111,10 @@ const DailyDiet: React.FC = () => {
         date: selectedDate,
       })
       .then((response) => {
-        console.log(response.data);
+        setMealsState({
+          ...mealsState,
+          meals: [...mealsState.meals, { ...response.data, foods: [] }],
+        });
       })
       .catch((error) => {
         Alert.alert("Erro ao criar refeição", "Tente novamente");
@@ -89,8 +130,12 @@ const DailyDiet: React.FC = () => {
           endDate: endOfDay(selectedDate),
         },
       })
-      .then((response) => console.log(response.data))
-      .catch((error) => console.log(error.response.data));
+      .then((response) => {
+        setMealsState(response.data);
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
   }, [selectedDate]);
 
   useEffect(() => {}, [showDatePicker]);
@@ -100,10 +145,9 @@ const DailyDiet: React.FC = () => {
       <KeyboardAvoidingView
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
+        <Header />
         <ScrollView>
           <Container>
-            <Header />
-
             <DateSelectionRow style={shadowStyles.style}>
               <ArrowLeftButton
                 onPress={() => {
@@ -152,23 +196,28 @@ const DailyDiet: React.FC = () => {
             )}
 
             <TotalConsumption style={shadowStyles.style}>
-              <TotalConsumptionTitle>Total: 0 calorias</TotalConsumptionTitle>
+              <TotalConsumptionTitle>
+                Total: {mealsState.energy_kcal} calorias
+              </TotalConsumptionTitle>
               <NutrientsOutterBox>
                 <NutrientInnerBox>
                   <NutrientsText>Carboidratos</NutrientsText>
-                  <NutrientsText>0 g</NutrientsText>
+                  <NutrientsText>{mealsState.carbs} g</NutrientsText>
                 </NutrientInnerBox>
                 <NutrientInnerBox>
                   <NutrientsText>Proteínas</NutrientsText>
-                  <NutrientsText>0 g</NutrientsText>
+                  <NutrientsText>{mealsState.proteins} g</NutrientsText>
                 </NutrientInnerBox>
                 <NutrientInnerBox>
                   <NutrientsText>Gorduras</NutrientsText>
-                  <NutrientsText>0 g</NutrientsText>
+                  <NutrientsText>{mealsState.fats} g</NutrientsText>
                 </NutrientInnerBox>
               </NutrientsOutterBox>
             </TotalConsumption>
-            <Meal />
+            {mealsState.meals &&
+              mealsState.meals.map((mealInMeals) => {
+                return <Meal key={mealInMeals.id} {...mealInMeals} />;
+              })}
           </Container>
         </ScrollView>
 
@@ -188,11 +237,7 @@ const DailyDiet: React.FC = () => {
           setIsAddMealModalVisible(false);
         }}
       >
-        <TouchableWithoutFeedback
-          onPress={() => {
-            Keyboard.dismiss();
-          }}
-        >
+        <View>
           <AddMealModalInnerView
             behavior={Platform.OS === "ios" ? "padding" : undefined}
           >
@@ -246,7 +291,7 @@ const DailyDiet: React.FC = () => {
               </AddMealModalButton>
             </AddMealModalButtonsView>
           </AddMealModalInnerView>
-        </TouchableWithoutFeedback>
+        </View>
       </Modal>
     </SafeAreaView>
   );
