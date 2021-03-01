@@ -32,14 +32,6 @@ interface MealFood {
   fats: number;
 }
 
-export interface IMeaaals {
-  energy_kcal: number;
-  carbs: number;
-  proteins: number;
-  fats: number;
-  meals: IMeal[];
-}
-
 interface MealProps {
   id: string;
   name: string;
