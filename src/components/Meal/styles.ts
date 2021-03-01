@@ -18,11 +18,27 @@ export const Food = styled.View`
   justify-content: center;
 `;
 
+export const MealHeader = styled.View`
+  flex-direction: row;
+`;
+
 export const MealNameText = styled.Text`
   font-size: 18px;
   margin-left: 20px;
+  margin-bottom: 10px;
   font-family: Roboto_700Bold;
   color: #000;
+`;
+
+export const ExcludeMealButton = styled(RectButton)`
+  margin-left: auto;
+  margin-right: 20px;
+  background-color: #fff;
+  align-items: center;
+  justify-content: center;
+  border-radius: 5px;
+  height: 32px;
+  width: 32px;
 `;
 
 export const FoodNameText = styled.Text`

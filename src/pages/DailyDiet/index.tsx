@@ -54,7 +54,7 @@ interface IMealFood {
   fats: number;
 }
 
-interface IMeal {
+export interface IMeal {
   id: string;
   name: string;
   date: Date;
@@ -65,7 +65,7 @@ interface IMeal {
   foods: IMealFood[];
 }
 
-interface IMeals {
+export interface IMeals {
   energy_kcal: number;
   carbs: number;
   proteins: number;
@@ -113,7 +113,17 @@ const DailyDiet: React.FC = () => {
       .then((response) => {
         setMealsState({
           ...mealsState,
-          meals: [...mealsState.meals, { ...response.data, foods: [] }],
+          meals: [
+            ...mealsState.meals,
+            {
+              ...response.data,
+              energy_kcal: 0,
+              carbs: 0,
+              proteins: 0,
+              fats: 0,
+              foods: [],
+            },
+          ],
         });
       })
       .catch((error) => {
@@ -216,7 +226,14 @@ const DailyDiet: React.FC = () => {
             </TotalConsumption>
             {mealsState.meals &&
               mealsState.meals.map((mealInMeals) => {
-                return <Meal key={mealInMeals.id} {...mealInMeals} />;
+                return (
+                  <Meal
+                    key={mealInMeals.id}
+                    {...mealInMeals}
+                    mealsState={mealsState}
+                    setMealsState={setMealsState}
+                  />
+                );
               })}
           </Container>
         </ScrollView>
