@@ -6,6 +6,8 @@ import { AntDesign, Feather } from "@expo/vector-icons";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+
+import roundOneDecimal from "../utils/roundOneDecimal";
 import api from "../../services/api";
 
 import {
@@ -207,20 +209,26 @@ const DailyDiet: React.FC = () => {
 
             <TotalConsumption style={shadowStyles.style}>
               <TotalConsumptionTitle>
-                Total: {mealsState.energy_kcal} calorias
+                Total: {roundOneDecimal(mealsState.energy_kcal)} calorias
               </TotalConsumptionTitle>
               <NutrientsOutterBox>
                 <NutrientInnerBox>
                   <NutrientsText>Carboidratos</NutrientsText>
-                  <NutrientsText>{mealsState.carbs} g</NutrientsText>
+                  <NutrientsText>
+                    {roundOneDecimal(mealsState.carbs)} g
+                  </NutrientsText>
                 </NutrientInnerBox>
                 <NutrientInnerBox>
                   <NutrientsText>Proteínas</NutrientsText>
-                  <NutrientsText>{mealsState.proteins} g</NutrientsText>
+                  <NutrientsText>
+                    {roundOneDecimal(mealsState.proteins)} g
+                  </NutrientsText>
                 </NutrientInnerBox>
                 <NutrientInnerBox>
                   <NutrientsText>Gorduras</NutrientsText>
-                  <NutrientsText>{mealsState.fats} g</NutrientsText>
+                  <NutrientsText>
+                    {roundOneDecimal(mealsState.fats)} g
+                  </NutrientsText>
                 </NutrientInnerBox>
               </NutrientsOutterBox>
             </TotalConsumption>

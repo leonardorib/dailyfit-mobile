@@ -5,7 +5,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import { IMeal, IMeals } from "../../pages/DailyDiet";
 
-import roundTwoDecimals from "../../pages/utils/roundTwoDecimals";
+import roundOneDecimal from "../../pages/utils/roundOneDecimal";
 
 import {
   Container,
@@ -56,10 +56,10 @@ const Meal: React.FC<MealProps> = (props: MealProps) => {
 
         const updatedMeals = meals.filter((meal) => meal.id !== mealId);
         props.setMealsState({
-          energy_kcal: roundTwoDecimals(energy_kcal - props.energy_kcal),
-          carbs: roundTwoDecimals(carbs - props.carbs),
-          proteins: roundTwoDecimals(proteins - props.proteins),
-          fats: roundTwoDecimals(fats - props.fats),
+          energy_kcal: energy_kcal - props.energy_kcal,
+          carbs: carbs - props.carbs,
+          proteins: proteins - props.proteins,
+          fats: fats - props.fats,
           meals: updatedMeals,
         });
       })
@@ -91,7 +91,11 @@ const Meal: React.FC<MealProps> = (props: MealProps) => {
           return (
             <Food key={food.id}>
               <FoodNameText>{food.name}</FoodNameText>
-              <FoodDescription>{`${food.quantity} ${food.quantity_unit}   -   ${food.energy_kcal} calorias`}</FoodDescription>
+              <FoodDescription>{`${roundOneDecimal(food.quantity)} ${
+                food.quantity_unit
+              }   -   ${roundOneDecimal(
+                food.energy_kcal
+              )} calorias`}</FoodDescription>
             </Food>
           );
         })}
