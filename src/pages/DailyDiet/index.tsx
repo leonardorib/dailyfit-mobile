@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Keyboard, Platform, Text, View } from "react-native";
+import { Alert, Button, Keyboard, Platform, Text, View } from "react-native";
 import { startOfDay, endOfDay, subDays, addDays, format } from "date-fns";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { AntDesign, Feather } from "@expo/vector-icons";
@@ -39,6 +39,8 @@ import {
 
 import Header from "../../components/Header";
 import Meal from "../../components/Meal";
+import AddFoodModalContent from "../../components/AddFoodModalContent";
+
 import { Modal } from "react-native-paper";
 import {
   TextInput,
@@ -85,6 +87,7 @@ const addMealSchema = yup.object().shape({
 
 const DailyDiet: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState(new Date(Date.now()));
+  const [isAddFoodModalVisible, setIsAddFoodModalVisible] = useState(false);
 
   const [mealsState, setMealsState] = useState<IMeals>({
     energy_kcal: 0,
@@ -160,6 +163,7 @@ const DailyDiet: React.FC = () => {
         <Header />
         <ScrollView>
           <Container>
+            {/* Selecting date */}
             <DateSelectionRow style={shadowStyles.style}>
               <ArrowLeftButton
                 onPress={() => {
@@ -190,6 +194,7 @@ const DailyDiet: React.FC = () => {
               </ArrowRightButton>
             </DateSelectionRow>
 
+            {/* Date Picker Modal */}
             {showDatePicker && (
               <DateTimePickerModal
                 isVisible={showDatePicker}
@@ -232,6 +237,8 @@ const DailyDiet: React.FC = () => {
                 </NutrientInnerBox>
               </NutrientsOutterBox>
             </TotalConsumption>
+
+            {/* Rendering meals list */}
             {mealsState.meals &&
               mealsState.meals.map((mealInMeals) => {
                 return (
@@ -240,6 +247,8 @@ const DailyDiet: React.FC = () => {
                     {...mealInMeals}
                     mealsState={mealsState}
                     setMealsState={setMealsState}
+                    isAddFoodModalVisible={isAddFoodModalVisible}
+                    setIsAddFoodModalVisible={setIsAddFoodModalVisible}
                   />
                 );
               })}
@@ -256,6 +265,8 @@ const DailyDiet: React.FC = () => {
           <AddMealButtonText>Adicionar refeição</AddMealButtonText>
         </AddMealButton>
       </KeyboardAvoidingView>
+
+      {/* Add Meal Modal */}
       <Modal
         visible={isAddMealModalVisible}
         onDismiss={() => {
@@ -317,6 +328,19 @@ const DailyDiet: React.FC = () => {
             </AddMealModalButtonsView>
           </AddMealModalInnerView>
         </View>
+      </Modal>
+
+      {/* Add Food Modal */}
+      <Modal
+        visible={isAddFoodModalVisible}
+        onDismiss={() => {
+          setIsAddFoodModalVisible(false);
+        }}
+      >
+        <AddFoodModalContent
+          isAddFoodModalVisible={isAddFoodModalVisible}
+          setIsAddFoodModalVisible={setIsAddFoodModalVisible}
+        />
       </Modal>
     </SafeAreaView>
   );

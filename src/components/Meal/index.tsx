@@ -1,9 +1,9 @@
-import React from "react";
-import { View, Text } from "react-native";
+import React, { useState } from "react";
+import { View, Text, Modal, Button } from "react-native";
 
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import { IMeal, IMeals } from "../../pages/DailyDiet";
+import { IMeals } from "../../pages/DailyDiet";
 
 import roundOneDecimal from "../../pages/utils/roundOneDecimal";
 
@@ -43,9 +43,13 @@ interface MealProps {
   foods: MealFood[];
   mealsState: IMeals;
   setMealsState: React.Dispatch<React.SetStateAction<IMeals>>;
+  isAddFoodModalVisible: boolean;
+  setIsAddFoodModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const Meal: React.FC<MealProps> = (props: MealProps) => {
+  const [isAddFoodModalVisible, setIsAddFoodModalVisible] = useState(false);
+
   const handleDeleteMeal = (mealId: string) => {
     api
       .delete(`meals/${mealId}`)
@@ -99,7 +103,12 @@ const Meal: React.FC<MealProps> = (props: MealProps) => {
             </Food>
           );
         })}
-      <AddFoodButton>
+
+      <AddFoodButton
+        onPress={() => {
+          props.setIsAddFoodModalVisible(true);
+        }}
+      >
         <AddFoodText>+ Adicionar alimento</AddFoodText>
       </AddFoodButton>
     </Container>
