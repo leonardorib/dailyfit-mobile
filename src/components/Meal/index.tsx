@@ -48,8 +48,6 @@ interface MealProps {
 }
 
 const Meal: React.FC<MealProps> = (props: MealProps) => {
-  const [isAddFoodModalVisible, setIsAddFoodModalVisible] = useState(false);
-
   const handleDeleteMeal = (mealId: string) => {
     api
       .delete(`meals/${mealId}`)
