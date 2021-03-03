@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Modal, View, ModalProps, Button, Text, Keyboard } from "react-native";
 import { FlatList, ScrollView } from "react-native-gesture-handler";
 import api from "../../services/api";
+import roundOneDecimal from "../../pages/utils/roundOneDecimal";
 
 import {
   Container,
@@ -9,6 +10,14 @@ import {
   SelectFoodText,
   FoodContainer,
   FoodName,
+  SelectedFoodContainer,
+  QuantityInput,
+  UnitRow,
+  UnitText,
+  CaloriesText,
+  NutrientsRow,
+  IndividualNutrientBox,
+  NutrientText,
   ModalButton,
   ModalButtonText,
   shadowStyles,
@@ -26,6 +35,24 @@ interface Food {
   fats: number;
 }
 
+// interface SelectedFood extends Food {
+//   quantity: number;
+//   energy_kcal_consumed: number;
+//   energy_kj_consumed: number;
+//   carbs_consumed: number;
+//   proteins_consumed: number;
+//   fats_consumed: number;
+// }
+
+interface NutrientsConsumed {
+  quantity: number;
+  energy_kcal: number;
+  energy_kj: number;
+  carbs: number;
+  proteins: number;
+  fats: number;
+}
+
 interface AddFoodModalContent {
   isAddFoodModalVisible: boolean;
   setIsAddFoodModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -36,10 +63,37 @@ const AddFoodModal: React.FC<AddFoodModalContent> = (
 ) => {
   const [searchInput, setSearchInput] = useState("");
   const [foods, setFoods] = useState<Food[]>([]);
-  const [selectedFood, setSelectedFood] = useState<Food>({} as Food);
+  const [selectedFood, setSelectedFood] = useState<Food | undefined>(undefined);
+  const [nutrientsConsumed, setNutrientsConsumed] = useState<NutrientsConsumed>(
+    {
+      quantity: 0,
+      energy_kcal: 0,
+      energy_kj: 0,
+      carbs: 0,
+      proteins: 0,
+      fats: 0,
+    }
+  );
 
   const onChangeSearchInput = (value: string) => {
     setSearchInput(value);
+  };
+
+  const onChangeQuantityInput = (value: number) => {
+    if (selectedFood) {
+      const proportionFactor = value / selectedFood.standard_quantity;
+
+      setNutrientsConsumed({
+        quantity: value,
+        energy_kcal: roundOneDecimal(
+          proportionFactor * selectedFood.energy_kcal
+        ),
+        energy_kj: roundOneDecimal(proportionFactor * selectedFood.energy_kj),
+        carbs: roundOneDecimal(proportionFactor * selectedFood.carbs),
+        proteins: roundOneDecimal(proportionFactor * selectedFood.proteins),
+        fats: roundOneDecimal(proportionFactor * selectedFood.fats),
+      });
+    }
   };
 
   const apiRequestFoods = (foodName: string) => {
@@ -99,13 +153,13 @@ const AddFoodModal: React.FC<AddFoodModalContent> = (
               return (
                 <FoodContainer
                   style={shadowStyles.style}
-                  isSelected={item.id === selectedFood.id ? true : false}
+                  isSelected={item.id === selectedFood?.id ? true : false}
                   onPress={() => {
                     setSelectedFood(item);
                   }}
                 >
                   <FoodName
-                    isSelected={item.id === selectedFood.id ? true : false}
+                    isSelected={item.id === selectedFood?.id ? true : false}
                   >
                     {item.name}
                   </FoodName>
@@ -114,6 +168,39 @@ const AddFoodModal: React.FC<AddFoodModalContent> = (
             }}
           />
         </>
+      )}
+
+      {selectedFood && (
+        <SelectedFoodContainer>
+          <SelectFoodText>Informe a quantidade</SelectFoodText>
+          <UnitRow>
+            <QuantityInput
+              onChangeText={(text) => {
+                onChangeQuantityInput(Number(text));
+              }}
+              keyboardType="number-pad"
+            />
+            <UnitText>gramas</UnitText>
+          </UnitRow>
+          <NutrientsRow>
+            <IndividualNutrientBox>
+              <NutrientText>Calorias</NutrientText>
+              <NutrientText>{nutrientsConsumed.energy_kcal} kcal</NutrientText>
+            </IndividualNutrientBox>
+            <IndividualNutrientBox>
+              <NutrientText>Carboidratos</NutrientText>
+              <NutrientText>{nutrientsConsumed.carbs} g</NutrientText>
+            </IndividualNutrientBox>
+            <IndividualNutrientBox>
+              <NutrientText>Proteínas</NutrientText>
+              <NutrientText>{nutrientsConsumed.proteins} g</NutrientText>
+            </IndividualNutrientBox>
+            <IndividualNutrientBox>
+              <NutrientText>Gorduras</NutrientText>
+              <NutrientText>{nutrientsConsumed.fats} g</NutrientText>
+            </IndividualNutrientBox>
+          </NutrientsRow>
+        </SelectedFoodContainer>
       )}
 
       <ModalButton

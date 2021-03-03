@@ -18,6 +18,7 @@ export const SearchInput = styled(Searchbar)`
   margin-top: 20px;
   width: 95%;
   margin-bottom: 10px;
+  font-family: Roboto_400Regular;
 `;
 
 export const SelectFoodText = styled.Text`
@@ -52,6 +53,7 @@ export const FoodName = styled.Text<FoodContainerProps>`
   font-size: 16px;
   margin-left: 20px;
   color: #444540;
+  font-family: Roboto_400Regular;
 
   ${(props) =>
     props.isSelected &&
@@ -59,6 +61,51 @@ export const FoodName = styled.Text<FoodContainerProps>`
       color: #fff;
       font-family: Roboto_700Bold;
     `}
+`;
+
+export const SelectedFoodContainer = styled.View`
+  width: 95%;
+  margin-bottom: 20px;
+`;
+
+export const UnitRow = styled.View`
+  align-items: center;
+  justify-content: center;
+  flex-direction: row;
+`;
+
+export const QuantityInput = styled.TextInput`
+  background-color: #fff;
+  padding-left: 10px;
+  height: 35px;
+  width: 120px;
+  border-radius: 5px;
+  margin-right: 10px;
+  margin-left: 28px;
+  font-family: Roboto_400Regular;
+  font-size: 16px;
+`;
+
+export const UnitText = styled.Text`
+  color: #444540;
+`;
+
+export const CaloriesText = styled.Text``;
+
+export const NutrientsRow = styled.View`
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 10px;
+`;
+
+export const IndividualNutrientBox = styled.View`
+  align-items: center;
+  margin-left: 10px;
+  margin-right: 10px;
+`;
+
+export const NutrientText = styled.Text`
+  color: #444540;
 `;
 
 export const ModalButton = styled(RectButton)`
