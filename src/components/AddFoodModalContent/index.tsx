@@ -4,6 +4,10 @@ import { FlatList, ScrollView } from "react-native-gesture-handler";
 import api from "../../services/api";
 import roundOneDecimal from "../../pages/utils/roundOneDecimal";
 
+import { useForm, Controller } from "react-hook-form";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+
 import {
   Container,
   SearchInput,
@@ -18,6 +22,7 @@ import {
   NutrientsRow,
   IndividualNutrientBox,
   NutrientText,
+  ModalButtonsRow,
   ModalButton,
   ModalButtonText,
   shadowStyles,
@@ -53,6 +58,14 @@ interface NutrientsConsumed {
   fats: number;
 }
 
+interface FoodQuantityInput {
+  quantity: number;
+}
+
+const foodQuantitySchema = yup.object().shape({
+  quantity: yup.number().moreThan(0).required(),
+});
+
 interface AddFoodModalContent {
   isAddFoodModalVisible: boolean;
   setIsAddFoodModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
@@ -75,11 +88,28 @@ const AddFoodModal: React.FC<AddFoodModalContent> = (
     }
   );
 
+  const { control, handleSubmit, errors } = useForm<FoodQuantityInput>({
+    resolver: yupResolver(foodQuantitySchema),
+  });
+
   const onChangeSearchInput = (value: string) => {
     setSearchInput(value);
   };
 
   const onChangeQuantityInput = (value: number) => {
+    if (Number.isNaN(value)) {
+      setNutrientsConsumed({
+        quantity: 0,
+        energy_kcal: 0,
+        energy_kj: 0,
+        carbs: 0,
+        proteins: 0,
+        fats: 0,
+      });
+
+      return;
+    }
+
     if (selectedFood) {
       const proportionFactor = value / selectedFood.standard_quantity;
 
@@ -174,12 +204,24 @@ const AddFoodModal: React.FC<AddFoodModalContent> = (
         <SelectedFoodContainer>
           <SelectFoodText>Informe a quantidade</SelectFoodText>
           <UnitRow>
-            <QuantityInput
-              onChangeText={(text) => {
-                onChangeQuantityInput(Number(text));
+            <Controller
+              control={control}
+              name="email"
+              defaultValue=""
+              render={({ value, onChange }) => {
+                return (
+                  <QuantityInput
+                    value={value}
+                    onChangeText={(value) => {
+                      onChange(Number(value));
+                      onChangeQuantityInput(Number(value));
+                    }}
+                    keyboardType="number-pad"
+                  />
+                );
               }}
-              keyboardType="number-pad"
             />
+
             <UnitText>gramas</UnitText>
           </UnitRow>
           <NutrientsRow>
@@ -202,14 +244,18 @@ const AddFoodModal: React.FC<AddFoodModalContent> = (
           </NutrientsRow>
         </SelectedFoodContainer>
       )}
-
-      <ModalButton
-        onPress={() => {
-          props.setIsAddFoodModalVisible(false);
-        }}
-      >
-        <ModalButtonText>Cancelar</ModalButtonText>
-      </ModalButton>
+      <ModalButtonsRow>
+        <ModalButton
+          onPress={() => {
+            props.setIsAddFoodModalVisible(false);
+          }}
+        >
+          <ModalButtonText>Cancelar</ModalButtonText>
+        </ModalButton>
+        <ModalButton onPress={() => {}}>
+          <ModalButtonText>OK</ModalButtonText>
+        </ModalButton>
+      </ModalButtonsRow>
     </Container>
   );
 };

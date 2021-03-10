@@ -108,6 +108,11 @@ export const NutrientText = styled.Text`
   color: #444540;
 `;
 
+export const ModalButtonsRow = styled.View`
+  flex-direction: row;
+  margin-top: auto;
+`;
+
 export const ModalButton = styled(RectButton)`
   background-color: #76c7c5;
   width: 100px;
@@ -115,8 +120,9 @@ export const ModalButton = styled(RectButton)`
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  margin-top: auto;
   margin-bottom: 15px;
+  margin-left: 20px;
+  margin-right: 20px;
 `;
 
 export const ModalButtonText = styled.Text`
