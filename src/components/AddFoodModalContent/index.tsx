@@ -213,7 +213,7 @@ const AddFoodModal: React.FC<AddFoodModalContent> = (
                   <QuantityInput
                     value={value}
                     onChangeText={(value) => {
-                      onChange(Number(value));
+                      onChange(value);
                       onChangeQuantityInput(Number(value));
                     }}
                     keyboardType="number-pad"
