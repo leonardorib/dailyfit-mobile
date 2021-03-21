@@ -1,18 +1,13 @@
 import React, { useContext } from "react";
-import { Alert, Keyboard, Platform, Text } from "react-native";
+import { Keyboard, Platform, Text } from "react-native";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-
 import AuthContext from "../../contexts/auth";
-
-import api from "../../services/api";
-
 import logoImg from "../../assets/logo.png";
-
 import inputTheme from "../utils/inputTheme";
 
 import {

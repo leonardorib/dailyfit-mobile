@@ -1,10 +1,7 @@
 import React from "react";
 import { View, Text, Platform } from "react-native";
-
-import { SafeAreaView, KeyboardAvoidingView, ScrollView } from "./styles";
-
 import Header from "../../components/Header";
-import Meal from "../../components/Meal";
+import { SafeAreaView, KeyboardAvoidingView, ScrollView } from "./styles";
 
 const Profile: React.FC = () => {
   return (

@@ -1,8 +1,6 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Text } from "react-native";
 import { useNavigation, DrawerActions } from "@react-navigation/native";
-
-import AuthContext from "../../contexts/auth";
 
 import {
   Container,
@@ -14,8 +12,6 @@ import {
 } from "./styles";
 
 const Header: React.FC = () => {
-  const { user } = useContext(AuthContext);
-
   const navigation = useNavigation();
 
   return (
