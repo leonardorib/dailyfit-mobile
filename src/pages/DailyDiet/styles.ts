@@ -27,9 +27,17 @@ export const Container = styled.View`
   align-items: center;
 `;
 
-export const ArrowRightButton = styled(RectButton)``;
+export const ArrowRightButton = styled(RectButton)`
+  width: auto;
+  flex: 1;
+  align-items: center;
+`;
 
-export const ArrowLeftButton = styled(RectButton)``;
+export const ArrowLeftButton = styled(RectButton)`
+  width: auto;
+  flex: 1;
+  align-items: center;
+`;
 
 export const DateText = styled.Text`
   margin-right: 8px;
