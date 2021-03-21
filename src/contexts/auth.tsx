@@ -41,15 +41,9 @@ export const AuthProvider: React.FC = ({ children }) => {
 
       const { user, token } = response.data;
 
-      setAuthState({
-        user: {
-          id: user.id,
-          firstName: user.first_name,
-          lastName: user.last_name,
-          email: user.email,
-        },
-        token,
-      });
+      api.axiosInstance.defaults.headers[
+        "Authorization"
+      ] = `Bearer ${response.data.token}`;
 
       await AsyncStorage.setItem(
         "@dailyFit:user",
@@ -63,9 +57,15 @@ export const AuthProvider: React.FC = ({ children }) => {
 
       await AsyncStorage.setItem("@dailyFit:token", token);
 
-      api.axiosInstance.defaults.headers[
-        "Authorization"
-      ] = `Bearer ${response.data.token}`;
+      setAuthState({
+        user: {
+          id: user.id,
+          firstName: user.first_name,
+          lastName: user.last_name,
+          email: user.email,
+        },
+        token,
+      });
     } catch (error) {
       Alert.alert("Erro no login", "Tente novamente");
       console.log(error);
