@@ -2,6 +2,7 @@ import styled, { css } from "styled-components/native";
 import { Searchbar } from "react-native-paper";
 import { RectButton } from "react-native-gesture-handler";
 import { StyleSheet, Dimensions } from "react-native";
+import { Modal } from "react-native-paper";
 
 interface FoodContainerProps {
   isSelected: boolean;

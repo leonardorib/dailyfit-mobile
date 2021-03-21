@@ -1,14 +1,21 @@
-import React, { useEffect, useState } from "react";
-import { Alert, Button, Keyboard, Platform, Text, View } from "react-native";
-import { startOfDay, endOfDay, subDays, addDays, format } from "date-fns";
+import React, { useContext, useEffect, useState } from "react";
+import { Platform, Text, View } from "react-native";
+import {
+  DefaultTheme,
+  Provider as PaperProvider,
+  Modal,
+} from "react-native-paper";
+import { observer } from "mobx-react";
+import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { format } from "date-fns";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { useForm, Controller } from "react-hook-form";
-import * as yup from "yup";
-import { yupResolver } from "@hookform/resolvers/yup";
-
 import roundOneDecimal from "../utils/roundOneDecimal";
-import api from "../../services/api";
+import Header from "../../components/Header";
+import Meal from "../../components/Meal";
+import { MealsStoreContext } from "../../stores/MealsStore";
 
 import {
   SafeAreaView,
@@ -37,22 +44,19 @@ import {
   shadowStyles,
 } from "./styles";
 
-import Header from "../../components/Header";
-import Meal from "../../components/Meal";
-import AddFoodModalContent from "../../components/AddFoodModalContent";
+export interface IAddFood {
+  foodId: string;
+  quantity: number;
+  quantity_unit: string;
+}
 
-import { Modal } from "react-native-paper";
-import {
-  TextInput,
-  TouchableWithoutFeedback,
-} from "react-native-gesture-handler";
-
-interface IMealFood {
+export interface IMealFood {
   id: string;
   name: string;
   quantity: number;
   quantity_unit: string;
   energy_kcal: number;
+  energy_kj: number;
   carbs: number;
   proteins: number;
   fats: number;
@@ -63,6 +67,7 @@ export interface IMeal {
   name: string;
   date: Date;
   energy_kcal: number;
+  energy_kj: number;
   carbs: number;
   proteins: number;
   fats: number;
@@ -71,6 +76,7 @@ export interface IMeal {
 
 export interface IMeals {
   energy_kcal: number;
+  energy_kj: number;
   carbs: number;
   proteins: number;
   fats: number;
@@ -85,17 +91,17 @@ const addMealSchema = yup.object().shape({
   mealName: yup.string().required("Informe um nome!"),
 });
 
-const DailyDiet: React.FC = () => {
-  const [selectedDate, setSelectedDate] = useState(new Date(Date.now()));
+const DailyDiet: React.FC = observer(() => {
+  const mealsStore = useContext(MealsStoreContext);
+  const {
+    selectedDate,
+    setSelectedDate,
+    addDay,
+    subtractDay,
+    getDailyDiet,
+    dailyDiet,
+  } = mealsStore;
   const [isAddFoodModalVisible, setIsAddFoodModalVisible] = useState(false);
-
-  const [mealsState, setMealsState] = useState<IMeals>({
-    energy_kcal: 0,
-    carbs: 0,
-    proteins: 0,
-    fats: 0,
-    meals: [],
-  });
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isAddMealModalVisible, setIsAddMealModalVisible] = useState(false);
 
@@ -108,242 +114,192 @@ const DailyDiet: React.FC = () => {
     resolver: yupResolver(addMealSchema),
   });
 
-  const onSubmitAddMeal = (formData: AddMealForm) => {
-    console.log(formData);
-    api
-      .post("meals", {
-        name: formData.mealName,
-        date: selectedDate,
-      })
-      .then((response) => {
-        setMealsState({
-          ...mealsState,
-          meals: [
-            ...mealsState.meals,
-            {
-              ...response.data,
-              energy_kcal: 0,
-              carbs: 0,
-              proteins: 0,
-              fats: 0,
-              foods: [],
-            },
-          ],
-        });
-      })
-      .catch((error) => {
-        Alert.alert("Erro ao criar refeição", "Tente novamente");
-        console.log(error.message);
-      });
+  const onSubmitAddMeal = async (formData: AddMealForm) => {
+    await mealsStore.createMeal(formData.mealName);
   };
 
   useEffect(() => {
-    api
-      .get("meals", {
-        params: {
-          startDate: startOfDay(selectedDate),
-          endDate: endOfDay(selectedDate),
-        },
-      })
-      .then((response) => {
-        setMealsState(response.data);
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-      });
-  }, [selectedDate]);
+    getDailyDiet();
+  }, [mealsStore.selectedDate]);
 
   useEffect(() => {}, [showDatePicker]);
 
   return (
-    <SafeAreaView>
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
-        <Header />
-        <ScrollView>
-          <Container>
-            {/* Selecting date */}
-            <DateSelectionRow style={shadowStyles.style}>
-              <ArrowLeftButton
-                onPress={() => {
-                  setSelectedDate(subDays(selectedDate, 1));
-                }}
-              >
-                <Feather name="chevron-left" size={24} color="#444540" />
-              </ArrowLeftButton>
-              <SelectedDateContainer
-                onPress={() => {
-                  setShowDatePicker(true);
-                }}
-              >
-                <DateText>
-                  {format(selectedDate, "dd/MM/yyyy") ===
-                  format(new Date(), "dd/MM/yyyy")
-                    ? "Hoje"
-                    : format(selectedDate, "dd/MM/yyyy")}
-                </DateText>
-                <AntDesign name="caretdown" size={10} color="#444540" />
-              </SelectedDateContainer>
-              <ArrowRightButton
-                onPress={() => {
-                  setSelectedDate(addDays(selectedDate, 1));
-                }}
-              >
-                <Feather name="chevron-right" size={24} color="#444540" />
-              </ArrowRightButton>
-            </DateSelectionRow>
+    <PaperProvider theme={DefaultTheme}>
+      <SafeAreaView>
+        <KeyboardAvoidingView
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+        >
+          <Header />
+          <ScrollView>
+            <Container>
+              {/* Selecting date */}
+              <DateSelectionRow style={shadowStyles.style}>
+                <ArrowLeftButton
+                  onPress={() => {
+                    subtractDay();
+                  }}
+                >
+                  <Feather name="chevron-left" size={24} color="#444540" />
+                </ArrowLeftButton>
+                <SelectedDateContainer
+                  onPress={() => {
+                    setShowDatePicker(true);
+                  }}
+                >
+                  <DateText>
+                    {format(selectedDate, "dd/MM/yyyy") ===
+                    format(new Date(), "dd/MM/yyyy")
+                      ? "Hoje"
+                      : format(selectedDate, "dd/MM/yyyy")}
+                  </DateText>
+                  <AntDesign name="caretdown" size={10} color="#444540" />
+                </SelectedDateContainer>
+                <ArrowRightButton
+                  onPress={() => {
+                    addDay();
+                  }}
+                >
+                  <Feather name="chevron-right" size={24} color="#444540" />
+                </ArrowRightButton>
+              </DateSelectionRow>
 
-            {/* Date Picker Modal */}
-            {showDatePicker && (
-              <DateTimePickerModal
-                isVisible={showDatePicker}
-                headerTextIOS="Selecione uma data"
-                confirmTextIOS="Confirmar"
-                cancelTextIOS="Cancelar"
-                date={selectedDate}
-                mode="date"
-                onConfirm={(date) => {
-                  setShowDatePicker(!showDatePicker);
-                  setSelectedDate(date);
-                }}
-                onCancel={() => setShowDatePicker(!showDatePicker)}
-                locale="pt-BR"
-              />
-            )}
+              {/* Date Picker Modal */}
+              {showDatePicker && (
+                <DateTimePickerModal
+                  isVisible={showDatePicker}
+                  headerTextIOS="Selecione uma data"
+                  confirmTextIOS="Confirmar"
+                  cancelTextIOS="Cancelar"
+                  date={selectedDate}
+                  mode="date"
+                  onConfirm={(date) => {
+                    setShowDatePicker(!showDatePicker);
+                    setSelectedDate(date);
+                  }}
+                  onCancel={() => setShowDatePicker(!showDatePicker)}
+                  locale="pt-BR"
+                />
+              )}
 
-            <TotalConsumption style={shadowStyles.style}>
-              <TotalConsumptionTitle>
-                Total: {roundOneDecimal(mealsState.energy_kcal)} calorias
-              </TotalConsumptionTitle>
-              <NutrientsOutterBox>
-                <NutrientInnerBox>
-                  <NutrientsText>Carboidratos</NutrientsText>
-                  <NutrientsText>
-                    {roundOneDecimal(mealsState.carbs)} g
-                  </NutrientsText>
-                </NutrientInnerBox>
-                <NutrientInnerBox>
-                  <NutrientsText>Proteínas</NutrientsText>
-                  <NutrientsText>
-                    {roundOneDecimal(mealsState.proteins)} g
-                  </NutrientsText>
-                </NutrientInnerBox>
-                <NutrientInnerBox>
-                  <NutrientsText>Gorduras</NutrientsText>
-                  <NutrientsText>
-                    {roundOneDecimal(mealsState.fats)} g
-                  </NutrientsText>
-                </NutrientInnerBox>
-              </NutrientsOutterBox>
-            </TotalConsumption>
+              <TotalConsumption style={shadowStyles.style}>
+                <TotalConsumptionTitle>
+                  Total: {roundOneDecimal(dailyDiet.energy_kcal)} calorias
+                </TotalConsumptionTitle>
+                <NutrientsOutterBox>
+                  <NutrientInnerBox>
+                    <NutrientsText>Carboidratos</NutrientsText>
+                    <NutrientsText>
+                      {roundOneDecimal(dailyDiet.carbs)} g
+                    </NutrientsText>
+                  </NutrientInnerBox>
+                  <NutrientInnerBox>
+                    <NutrientsText>Proteínas</NutrientsText>
+                    <NutrientsText>
+                      {roundOneDecimal(dailyDiet.proteins)} g
+                    </NutrientsText>
+                  </NutrientInnerBox>
+                  <NutrientInnerBox>
+                    <NutrientsText>Gorduras</NutrientsText>
+                    <NutrientsText>
+                      {roundOneDecimal(dailyDiet.fats)} g
+                    </NutrientsText>
+                  </NutrientInnerBox>
+                </NutrientsOutterBox>
+              </TotalConsumption>
 
-            {/* Rendering meals list */}
-            {mealsState.meals &&
-              mealsState.meals.map((mealInMeals) => {
-                return (
-                  <Meal
-                    key={mealInMeals.id}
-                    {...mealInMeals}
-                    mealsState={mealsState}
-                    setMealsState={setMealsState}
-                    isAddFoodModalVisible={isAddFoodModalVisible}
-                    setIsAddFoodModalVisible={setIsAddFoodModalVisible}
-                  />
-                );
-              })}
-          </Container>
-        </ScrollView>
+              {/* Rendering meals list */}
+              {dailyDiet.meals &&
+                dailyDiet.meals.map((meal) => {
+                  return (
+                    <Meal
+                      key={meal.id}
+                      meal={meal}
+                      mealsStore={mealsStore}
+                      isAddFoodModalVisible={isAddFoodModalVisible}
+                      setIsAddFoodModalVisible={setIsAddFoodModalVisible}
+                    />
+                  );
+                })}
+            </Container>
+          </ScrollView>
 
-        <AddMealButton
-          style={shadowStyles.style}
-          onPress={() => {
-            setIsAddMealModalVisible(true);
+          <AddMealButton
+            style={shadowStyles.style}
+            onPress={() => {
+              setIsAddMealModalVisible(true);
+            }}
+          >
+            <AntDesign name="pluscircleo" size={40} color="#76c7c5" />
+            <AddMealButtonText>Adicionar refeição</AddMealButtonText>
+          </AddMealButton>
+        </KeyboardAvoidingView>
+        {/* Add Meal Modal */}
+        <Modal
+          visible={isAddMealModalVisible}
+          onDismiss={() => {
+            setIsAddMealModalVisible(false);
           }}
         >
-          <AntDesign name="pluscircleo" size={40} color="#76c7c5" />
-          <AddMealButtonText>Adicionar refeição</AddMealButtonText>
-        </AddMealButton>
-      </KeyboardAvoidingView>
+          <View>
+            <AddMealModalInnerView
+              behavior={Platform.OS === "ios" ? "padding" : undefined}
+            >
+              <AddMealModalText>Dê um nome para sua refeição</AddMealModalText>
+              <Controller
+                name="mealName"
+                defaultValue=""
+                control={controlAddMeal}
+                render={({ value, onChange }) => {
+                  return (
+                    <>
+                      <AddMealModalInput
+                        autoFocus={true}
+                        value={value}
+                        onChangeText={(value) => onChange(value)}
+                        returnKeyType="send"
+                        onSubmitEditing={() => {
+                          handleSubmitAddMeal(onSubmitAddMeal)();
 
-      {/* Add Meal Modal */}
-      <Modal
-        visible={isAddMealModalVisible}
-        onDismiss={() => {
-          setIsAddMealModalVisible(false);
-        }}
-      >
-        <View>
-          <AddMealModalInnerView
-            behavior={Platform.OS === "ios" ? "padding" : undefined}
-          >
-            <AddMealModalText>Dê um nome para sua refeição</AddMealModalText>
-            <Controller
-              name="mealName"
-              defaultValue=""
-              control={controlAddMeal}
-              render={({ value, onChange }) => {
-                return (
-                  <>
-                    <AddMealModalInput
-                      autoFocus={true}
-                      value={value}
-                      onChangeText={(value) => onChange(value)}
-                      returnKeyType="send"
-                      onSubmitEditing={() => {
-                        handleSubmitAddMeal(onSubmitAddMeal)();
-
-                        if (value.length > 0) {
-                          setIsAddMealModalVisible(false);
-                        }
-                      }}
-                    />
-                  </>
-                );
-              }}
-            />
-
-            {errorsAddMeal.mealName?.message && (
-              <ErrorText>{errorsAddMeal.mealName?.message}</ErrorText>
-            )}
-
-            <AddMealModalButtonsView>
-              <AddMealModalButton
-                onPress={() => {
-                  setIsAddMealModalVisible(false);
+                          if (value.length > 0) {
+                            setIsAddMealModalVisible(false);
+                          }
+                        }}
+                      />
+                    </>
+                  );
                 }}
-              >
-                <AddMealModalButtonText>Cancelar</AddMealModalButtonText>
-              </AddMealModalButton>
-              <AddMealModalButton
-                onPress={() => {
-                  handleSubmitAddMeal(onSubmitAddMeal)();
-                  if (getAddMealValue("mealName").length > 0) {
+              />
+
+              {errorsAddMeal.mealName?.message && (
+                <ErrorText>{errorsAddMeal.mealName?.message}</ErrorText>
+              )}
+
+              <AddMealModalButtonsView>
+                <AddMealModalButton
+                  onPress={() => {
                     setIsAddMealModalVisible(false);
-                  }
-                }}
-              >
-                <AddMealModalButtonText>Confirmar</AddMealModalButtonText>
-              </AddMealModalButton>
-            </AddMealModalButtonsView>
-          </AddMealModalInnerView>
-        </View>
-      </Modal>
-
-      {/* Add Food Modal */}
-      <Modal
-        visible={isAddFoodModalVisible}
-        onDismiss={() => {
-          setIsAddFoodModalVisible(false);
-        }}
-      >
-        <AddFoodModalContent
-          isAddFoodModalVisible={isAddFoodModalVisible}
-          setIsAddFoodModalVisible={setIsAddFoodModalVisible}
-        />
-      </Modal>
-    </SafeAreaView>
+                  }}
+                >
+                  <AddMealModalButtonText>Cancelar</AddMealModalButtonText>
+                </AddMealModalButton>
+                <AddMealModalButton
+                  onPress={() => {
+                    handleSubmitAddMeal(onSubmitAddMeal)();
+                    if (getAddMealValue("mealName").length > 0) {
+                      setIsAddMealModalVisible(false);
+                    }
+                  }}
+                >
+                  <AddMealModalButtonText>Confirmar</AddMealModalButtonText>
+                </AddMealModalButton>
+              </AddMealModalButtonsView>
+            </AddMealModalInnerView>
+          </View>
+        </Modal>
+      </SafeAreaView>
+    </PaperProvider>
   );
-};
+});
 
 export default DailyDiet;

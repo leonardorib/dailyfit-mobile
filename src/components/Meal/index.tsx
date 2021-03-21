@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-import { View, Text, Modal, Button } from "react-native";
-
+import React from "react";
+import { Portal } from "react-native-paper";
+import { observer } from "mobx-react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-
-import { IMeals } from "../../pages/DailyDiet";
-
+import { IMealFood } from "../../pages/DailyDiet";
+import { MealsStore } from "../../stores/MealsStore";
 import roundOneDecimal from "../../pages/utils/roundOneDecimal";
-
+import AddFoodModal from "../AddFoodModal";
 import {
   Container,
   Food,
@@ -19,64 +18,59 @@ import {
   AddFoodText,
   shadowStyles,
 } from "./styles";
-import api from "../../services/api";
 
-interface MealFood {
-  id: string;
-  name: string;
+export interface IAddFood {
+  foodId: string;
   quantity: number;
   quantity_unit: string;
-  energy_kcal: number;
-  carbs: number;
-  proteins: number;
-  fats: number;
 }
 
-interface MealProps {
+interface IMeal {
   id: string;
   name: string;
   date: Date;
   energy_kcal: number;
+  energy_kj: number;
   carbs: number;
   proteins: number;
   fats: number;
-  foods: MealFood[];
-  mealsState: IMeals;
-  setMealsState: React.Dispatch<React.SetStateAction<IMeals>>;
+  foods: IMealFood[];
+}
+
+interface MealProps {
+  meal: IMeal;
+  mealsStore: MealsStore;
   isAddFoodModalVisible: boolean;
   setIsAddFoodModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Meal: React.FC<MealProps> = (props: MealProps) => {
-  const handleDeleteMeal = (mealId: string) => {
-    api
-      .delete(`meals/${mealId}`)
-      .then((response) => {
-        console.log("Meals state:");
-        console.log(props.mealsState);
-        const { meals, energy_kcal, carbs, proteins, fats } = props.mealsState;
+const Meal: React.FC<MealProps> = observer((props: MealProps) => {
+  const { meal, mealsStore } = props;
 
-        const updatedMeals = meals.filter((meal) => meal.id !== mealId);
-        props.setMealsState({
-          energy_kcal: energy_kcal - props.energy_kcal,
-          carbs: carbs - props.carbs,
-          proteins: proteins - props.proteins,
-          fats: fats - props.fats,
-          meals: updatedMeals,
-        });
-      })
-      .catch((error) => {
-        console.log(error.response.data);
-      });
+  const handleDeleteMeal = async (mealId: string) => {
+    await mealsStore.deleteMeal({ mealId });
+  };
+
+  const handleAddFood = async ({
+    foodId,
+    quantity,
+    quantity_unit,
+  }: IAddFood) => {
+    await mealsStore.addFoodToMeal({
+      mealId: meal.id,
+      foodId,
+      quantity,
+      quantity_unit,
+    });
   };
 
   return (
     <Container style={shadowStyles.style}>
       <MealHeader>
-        <MealNameText>{props.name}</MealNameText>
+        <MealNameText>{meal.name}</MealNameText>
         <ExcludeMealButton
           onPress={() => {
-            handleDeleteMeal(props.id);
+            handleDeleteMeal(meal.id);
           }}
           style={shadowStyles.style}
         >
@@ -88,8 +82,8 @@ const Meal: React.FC<MealProps> = (props: MealProps) => {
         </ExcludeMealButton>
       </MealHeader>
 
-      {props.foods.length > 0 &&
-        props.foods.map((food) => {
+      {meal.foods.length > 0 &&
+        meal.foods.map((food) => {
           return (
             <Food key={food.id}>
               <FoodNameText>{food.name}</FoodNameText>
@@ -109,8 +103,17 @@ const Meal: React.FC<MealProps> = (props: MealProps) => {
       >
         <AddFoodText>+ Adicionar alimento</AddFoodText>
       </AddFoodButton>
+      <Portal>
+        <AddFoodModal
+          meal={meal}
+          handleAddFood={handleAddFood}
+          isAddFoodModalVisible={props.isAddFoodModalVisible}
+          setIsAddFoodModalVisible={props.setIsAddFoodModalVisible}
+          mealsStore={mealsStore}
+        />
+      </Portal>
     </Container>
   );
-};
+});
 
 export default Meal;
