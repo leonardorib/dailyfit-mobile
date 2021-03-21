@@ -35,40 +35,41 @@ export const AuthProvider: React.FC = ({ children }) => {
     token: "",
   });
 
-  const handleSignIn = (signInData: SignInData) => {
-    api
-      .post("/auth", signInData)
-      .then(async (response) => {
-        console.log(response.data);
-        const userReturned = response.data.user;
-        setAuthState({
-          user: {
-            id: userReturned.id,
-            email: userReturned.email,
-            firstName: userReturned.first_name,
-            lastName: userReturned.last_name,
-          },
-          token: response.data.token,
-        });
+  const handleSignIn = async (signInData: SignInData) => {
+    try {
+      const response = await api.users.authenticate(signInData);
 
-        await AsyncStorage.setItem(
-          "@dailyFit:user",
-          JSON.stringify({
-            id: userReturned.id,
-            email: userReturned.email,
-            firstName: userReturned.first_name,
-            lastName: userReturned.last_name,
-          })
-        );
+      const { user, token } = response.data;
 
-        await AsyncStorage.setItem("@dailyFit:token", response.data.token);
-
-        api.defaults.headers["Authorization"] = `Bearer ${response.data.token}`;
-      })
-      .catch((error) => {
-        Alert.alert("Erro no login", "Tente novamente");
-        console.log(error);
+      setAuthState({
+        user: {
+          id: user.id,
+          firstName: user.first_name,
+          lastName: user.last_name,
+          email: user.email,
+        },
+        token,
       });
+
+      await AsyncStorage.setItem(
+        "@dailyFit:user",
+        JSON.stringify({
+          id: user.id,
+          email: user.email,
+          firstName: user.first_name,
+          lastName: user.last_name,
+        })
+      );
+
+      await AsyncStorage.setItem("@dailyFit:token", token);
+
+      api.axiosInstance.defaults.headers[
+        "Authorization"
+      ] = `Bearer ${response.data.token}`;
+    } catch (error) {
+      Alert.alert("Erro no login", "Tente novamente");
+      console.log(error);
+    }
   };
 
   const handleSignOut = async () => {
@@ -90,7 +91,9 @@ export const AuthProvider: React.FC = ({ children }) => {
           user: JSON.parse(storedUser),
           token: storedToken,
         });
-        api.defaults.headers["Authorization"] = `Bearer ${storedToken}`;
+        api.axiosInstance.defaults.headers[
+          "Authorization"
+        ] = `Bearer ${storedToken}`;
       }
     };
 

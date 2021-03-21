@@ -6,11 +6,8 @@ import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-
 import api from "../../services/api";
-
 import logoImg from "../../assets/logo.png";
-
 import inputTheme from "../utils/inputTheme";
 
 import {
@@ -62,28 +59,22 @@ const SignUp: React.FC = () => {
 
   const navigation = useNavigation();
 
-  const onSubmit = (formData: FormData) => {
-    api
-      .post("/users", formData)
-      .then((response) => {
-        Alert.alert(
-          "Cadastro realizado com sucesso!",
-          "Você já pode logar ;)",
-          [
-            {
-              text: "OK",
-              onPress: () => {
-                navigation.navigate("Login");
-              },
-            },
-          ]
-        );
-        console.log(response.data);
-      })
-      .catch((error) => {
-        Alert.alert("Erro no cadastro", "Tente novamente");
-        console.log(error);
-      });
+  const onSubmit = async (formData: FormData) => {
+    try {
+      const response = await api.users.create({ ...formData });
+      Alert.alert("Cadastro realizado com sucesso!", "Você já pode logar ;)", [
+        {
+          text: "OK",
+          onPress: () => {
+            navigation.navigate("Login");
+          },
+        },
+      ]);
+      console.log(response.data);
+    } catch (error) {
+      Alert.alert("Erro no cadastro", "Tente novamente");
+      console.error(error);
+    }
   };
 
   return (
