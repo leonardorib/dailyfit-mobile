@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Keyboard } from "react-native";
+import { Keyboard, Platform } from "react-native";
 import { Modal } from "react-native-paper";
 import { FlatList } from "react-native-gesture-handler";
 import api from "../../services/api";
@@ -153,6 +153,11 @@ const AddFoodModal: React.FC<IAddFoodModalProps> = observer(
     };
 
     useEffect(() => {
+      const quantityInput = control.getValues().quantity;
+      if (quantityInput) onChangeQuantityInput(quantityInput);
+    }, [selectedFood]);
+
+    useEffect(() => {
       const timeOut = setTimeout(() => {
         if (searchInput.length > 1) {
           apiRequestFoods(searchInput);
@@ -166,8 +171,19 @@ const AddFoodModal: React.FC<IAddFoodModalProps> = observer(
     }, [searchInput]);
 
     return (
-      <Modal visible={props.isAddFoodModalVisible}>
-        <Container>
+      <Modal
+        visible={props.isAddFoodModalVisible}
+        onDismiss={() => {
+          props.setIsAddFoodModalVisible(false);
+          setSelectedFood(undefined);
+          setFoods([]);
+          setSearchInput("");
+        }}
+      >
+        <Container
+          behavior={Platform.OS === "ios" ? "padding" : undefined}
+          keyboardVerticalOffset={30}
+        >
           <SearchInput
             placeholder="Procure por um alimento"
             onChangeText={onChangeSearchInput}
@@ -230,7 +246,7 @@ const AddFoodModal: React.FC<IAddFoodModalProps> = observer(
 
                           onChangeQuantityInput(Number(value));
                         }}
-                        keyboardType="number-pad"
+                        keyboardType="numbers-and-punctuation"
                       />
                     );
                   }}

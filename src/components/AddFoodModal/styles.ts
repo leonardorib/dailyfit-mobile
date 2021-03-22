@@ -8,7 +8,7 @@ interface FoodContainerProps {
   isSelected: boolean;
 }
 
-export const Container = styled.View`
+export const Container = styled.KeyboardAvoidingView`
   align-items: center;
   background-color: #e5e5e5;
   min-height: 400px;
