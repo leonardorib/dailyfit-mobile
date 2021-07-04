@@ -1,6 +1,6 @@
 import React from "react";
 import { StatusBar } from "expo-status-bar";
-import { AppLoading } from "expo";
+import AppLoading from "expo-app-loading";
 import { NavigationContainer } from "@react-navigation/native";
 import Routes from "./src/routes";
 import { AuthProvider } from "./src/contexts/auth";
