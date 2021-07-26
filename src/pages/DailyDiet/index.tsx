@@ -12,8 +12,8 @@ import { format } from "date-fns";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { useForm, Controller } from "react-hook-form";
-import roundOneDecimal from "../utils/roundOneDecimal";
 import Header from "../../components/Header";
+import TotalConsumptionBox from "../../components/TotalConsumptionBox";
 import Meal from "../../components/Meal";
 import { MealsStoreContext } from "../../stores/MealsStore";
 
@@ -27,11 +27,6 @@ import {
   DateText,
   ArrowLeftButton,
   ArrowRightButton,
-  TotalConsumption,
-  TotalConsumptionTitle,
-  NutrientsOutterBox,
-  NutrientInnerBox,
-  NutrientsText,
   AddMealButton,
   AddMealButtonText,
   AddMealModalInnerView,
@@ -49,40 +44,6 @@ export interface IAddFood {
   quantity: number;
   quantity_unit: string;
 }
-
-export interface IMealFood {
-  id: string;
-  name: string;
-  quantity: number;
-  quantity_unit: string;
-  energy_kcal: number;
-  energy_kj: number;
-  carbs: number;
-  proteins: number;
-  fats: number;
-}
-
-export interface IMeal {
-  id: string;
-  name: string;
-  date: Date;
-  energy_kcal: number;
-  energy_kj: number;
-  carbs: number;
-  proteins: number;
-  fats: number;
-  foods: IMealFood[];
-}
-
-export interface IMeals {
-  energy_kcal: number;
-  energy_kj: number;
-  carbs: number;
-  proteins: number;
-  fats: number;
-  meals: IMeal[];
-}
-
 interface AddMealForm {
   mealName: string;
 }
@@ -182,31 +143,12 @@ const DailyDiet: React.FC = observer(() => {
                 />
               )}
 
-              <TotalConsumption style={shadowStyles.style}>
-                <TotalConsumptionTitle>
-                  Total: {roundOneDecimal(dailyDiet.energy_kcal)} calorias
-                </TotalConsumptionTitle>
-                <NutrientsOutterBox>
-                  <NutrientInnerBox>
-                    <NutrientsText>Carboidratos</NutrientsText>
-                    <NutrientsText>
-                      {roundOneDecimal(dailyDiet.carbs)} g
-                    </NutrientsText>
-                  </NutrientInnerBox>
-                  <NutrientInnerBox>
-                    <NutrientsText>Proteínas</NutrientsText>
-                    <NutrientsText>
-                      {roundOneDecimal(dailyDiet.proteins)} g
-                    </NutrientsText>
-                  </NutrientInnerBox>
-                  <NutrientInnerBox>
-                    <NutrientsText>Gorduras</NutrientsText>
-                    <NutrientsText>
-                      {roundOneDecimal(dailyDiet.fats)} g
-                    </NutrientsText>
-                  </NutrientInnerBox>
-                </NutrientsOutterBox>
-              </TotalConsumption>
+              <TotalConsumptionBox
+			  	energy_kcal={dailyDiet.energy_kcal}
+				carbs={dailyDiet.carbs}
+				proteins={dailyDiet.proteins}
+				fats={dailyDiet.fats}
+			  />
 
               {/* Rendering meals list */}
               {dailyDiet.meals &&

@@ -64,38 +64,6 @@ export const SelectedDateContainer = styled(RectButton)`
   justify-content: center;
 `;
 
-export const TotalConsumption = styled.View`
-  background-color: #fff;
-  align-items: center;
-  justify-content: center;
-  width: 98%;
-  border-radius: 5px;
-  padding: 12px 0 12px 0;
-  margin-top: 5px;
-  margin-bottom: 8px;
-`;
-
-export const TotalConsumptionTitle = styled.Text`
-  font-family: Roboto_700Bold;
-  font-size: 18px;
-`;
-
-export const NutrientsOutterBox = styled.View`
-  margin-top: 10px;
-  flex-direction: row;
-  width: 100%;
-  justify-content: space-evenly;
-`;
-
-export const NutrientInnerBox = styled.View`
-  align-items: center;
-`;
-
-export const NutrientsText = styled.Text`
-  font-family: Roboto_400Regular;
-  font-size: 16px;
-`;
-
 export const AddMealButton = styled(RectButton)`
   flex-direction: row;
   background-color: #fff;
