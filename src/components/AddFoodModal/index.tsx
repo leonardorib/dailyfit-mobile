@@ -7,8 +7,7 @@ import roundOneDecimal from "../../pages/utils/roundOneDecimal";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { MealsStore } from "../../stores/MealsStore";
-import { IMeal } from "../../pages/DailyDiet";
+import { IMeal } from "../../services/api/Meals";
 
 import {
   Container,
@@ -67,7 +66,6 @@ const foodQuantitySchema = yup.object().shape({
 interface IAddFoodModalProps {
   meal: IMeal;
   isAddFoodModalVisible: boolean;
-  mealsStore: MealsStore;
   handleAddFood: (addFoodData: IAddFood) => Promise<void>;
   setIsAddFoodModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
