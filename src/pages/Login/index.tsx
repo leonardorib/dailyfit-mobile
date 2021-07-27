@@ -40,7 +40,7 @@ const loginSchema = yup.object().shape({
   password: yup.string().required("Digite sua senha"),
 });
 
-const Login: React.FC = () => {
+export const Login: React.FC = () => {
   const { handleSignIn } = useContext(AuthContext);
 
   const { control, handleSubmit, errors } = useForm<FormData>({
@@ -144,5 +144,3 @@ const Login: React.FC = () => {
     </PaperProvider>
   );
 };
-
-export default Login;

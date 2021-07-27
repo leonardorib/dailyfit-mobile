@@ -10,7 +10,7 @@ import AuthContext from "../../contexts/auth";
 
 import { Container, Header, WelcomeText, UserNameText } from "./styles";
 
-const Drawer: React.FC<DrawerContentComponentProps> = ({
+export const Drawer: React.FC<DrawerContentComponentProps> = ({
   ...props
 }: DrawerContentComponentProps) => {
   const { user, handleSignOut } = useContext(AuthContext);
@@ -29,4 +29,3 @@ const Drawer: React.FC<DrawerContentComponentProps> = ({
   );
 };
 
-export default Drawer;

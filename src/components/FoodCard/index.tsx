@@ -22,7 +22,7 @@ interface IProps {
 	editMealFood: () => void;
 }
 
-const FoodCard: React.FC<IProps> = observer((props: IProps) => {
+export const FoodCard: React.FC<IProps> = observer((props: IProps) => {
 	const { mealFood, deleteMealFood, editMealFood } = props;
 
 	return (
@@ -81,5 +81,3 @@ const FoodCard: React.FC<IProps> = observer((props: IProps) => {
 		</Container>
 	);
 });
-
-export default FoodCard;

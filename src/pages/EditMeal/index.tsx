@@ -8,10 +8,12 @@ import {
 	Modal,
 } from "react-native-paper";
 import { observer, useLocalObservable } from "mobx-react";
-import Header from "../../components/Header";
-import TotalConsumptionBox from "../../components/TotalConsumptionBox";
-import FoodCard from "../../components/FoodCard";
-import Loading from "../../components/Loading";
+import {
+	Header,
+	TotalConsumptionBox,
+	FoodCard,
+	Loading,
+} from "../../components";
 import {
 	SafeAreaView,
 	KeyboardAvoidingView,
@@ -32,7 +34,7 @@ interface IProps {
 	route: any;
 }
 
-const EditMeal: React.FC<IProps> = observer(({ route }) => {
+export const EditMeal: React.FC<IProps> = observer(({ route }) => {
 	const localStore = useLocalObservable(() => new Store(route.params.mealId));
 	const [isAddFoodModalVisible, setIsAddFoodModalVisible] = useState(false);
 
@@ -53,7 +55,9 @@ const EditMeal: React.FC<IProps> = observer(({ route }) => {
 							<Container>
 								<TitleContainer style={shadowStyles.style}>
 									<TitleText>Refeição</TitleText>
-									<MealNameText>{localStore.meal.name}</MealNameText>
+									<MealNameText>
+										{localStore.meal.name}
+									</MealNameText>
 								</TitleContainer>
 
 								<TotalConsumptionBox
@@ -63,20 +67,18 @@ const EditMeal: React.FC<IProps> = observer(({ route }) => {
 									fats={localStore.meal.fats}
 								/>
 
-								{
-									localStore.meal.mealFoods.map(food => (
-										<FoodCard
-											key={food.id}
-											mealFood={food}
-											deleteMealFood={() => {
-												console.log("delete"); // TODO
-											}}
-											editMealFood={() => {
-												console.log("edit"); // TODO
-											}}
-										/>
-									))
-								}
+								{localStore.meal.mealFoods.map((food) => (
+									<FoodCard
+										key={food.id}
+										mealFood={food}
+										deleteMealFood={() => {
+											console.log("delete"); // TODO
+										}}
+										editMealFood={() => {
+											console.log("edit"); // TODO
+										}}
+									/>
+								))}
 							</Container>
 						)}
 					</ScrollView>
@@ -124,5 +126,3 @@ const EditMeal: React.FC<IProps> = observer(({ route }) => {
 		</PaperProvider>
 	);
 });
-
-export default EditMeal;

@@ -70,7 +70,7 @@ interface IAddFoodModalProps {
   setIsAddFoodModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const AddFoodModal: React.FC<IAddFoodModalProps> = observer(
+export const AddFoodModal: React.FC<IAddFoodModalProps> = observer(
   (props: IAddFoodModalProps) => {
     const { handleAddFood } = props;
     const [searchInput, setSearchInput] = useState("");
@@ -298,5 +298,3 @@ const AddFoodModal: React.FC<IAddFoodModalProps> = observer(
     );
   }
 );
-
-export default AddFoodModal;

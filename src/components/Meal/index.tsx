@@ -4,7 +4,7 @@ import { observer } from "mobx-react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { MealsStore } from "../../stores/MealsStore";
 import roundOneDecimal from "../../pages/utils/roundOneDecimal";
-import AddFoodModal from "../AddFoodModal";
+import { AddFoodModal } from "../AddFoodModal";
 import {
 	Container,
 	Food,
@@ -34,7 +34,7 @@ interface MealProps {
 	setIsAddFoodModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const Meal: React.FC<MealProps> = observer((props: MealProps) => {
+export const Meal: React.FC<MealProps> = observer((props: MealProps) => {
 	const { meal, mealsStore } = props;
 
 	const { navigate } = useNavigation();
@@ -122,5 +122,3 @@ const Meal: React.FC<MealProps> = observer((props: MealProps) => {
 		</Container>
 	);
 });
-
-export default Meal;

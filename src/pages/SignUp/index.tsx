@@ -52,7 +52,7 @@ const signUpSchema = yup.object().shape({
     .required("Confirmação de senha obrigatória"),
 });
 
-const SignUp: React.FC = () => {
+export const SignUp: React.FC = () => {
   const { control, handleSubmit, errors } = useForm<FormData>({
     resolver: yupResolver(signUpSchema),
   });
@@ -232,5 +232,3 @@ const SignUp: React.FC = () => {
     </PaperProvider>
   );
 };
-
-export default SignUp;

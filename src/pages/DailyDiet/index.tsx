@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Platform, Text, View } from "react-native";
+import { Platform, View } from "react-native";
 import {
   DefaultTheme,
   Provider as PaperProvider,
@@ -12,9 +12,7 @@ import { format } from "date-fns";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { useForm, Controller } from "react-hook-form";
-import Header from "../../components/Header";
-import TotalConsumptionBox from "../../components/TotalConsumptionBox";
-import Meal from "../../components/Meal";
+import { Header, TotalConsumptionBox, Meal } from "../../components"
 import { MealsStoreContext } from "../../stores/MealsStore";
 
 import {
@@ -52,7 +50,7 @@ const addMealSchema = yup.object().shape({
   mealName: yup.string().required("Informe um nome!"),
 });
 
-const DailyDiet: React.FC = observer(() => {
+export const DailyDiet: React.FC = observer(() => {
   const mealsStore = useContext(MealsStoreContext);
   const {
     selectedDate,
@@ -243,5 +241,3 @@ const DailyDiet: React.FC = observer(() => {
     </PaperProvider>
   );
 });
-
-export default DailyDiet;

@@ -17,7 +17,7 @@ interface IProps {
 	fats: number;
 }
 
-const TotalConsumptionBox: React.FC<IProps> = observer((props) => {
+export const TotalConsumptionBox: React.FC<IProps> = observer((props) => {
 	const { energy_kcal, carbs, proteins, fats } = props;
 
 	return (
@@ -42,5 +42,3 @@ const TotalConsumptionBox: React.FC<IProps> = observer((props) => {
 		</Container>
 	);
 });
-
-export default TotalConsumptionBox;

@@ -1,9 +1,9 @@
 import React from "react";
 import { View, Text, Platform } from "react-native";
-import Header from "../../components/Header";
+import { Header } from "../../components";
 import { SafeAreaView, KeyboardAvoidingView, ScrollView } from "./styles";
 
-const Profile: React.FC = () => {
+export const Profile: React.FC = () => {
   return (
     <SafeAreaView>
       <KeyboardAvoidingView
@@ -26,5 +26,3 @@ const Profile: React.FC = () => {
     </SafeAreaView>
   );
 };
-
-export default Profile;

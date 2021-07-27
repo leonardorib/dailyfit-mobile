@@ -11,7 +11,7 @@ import {
   MenuIcon,
 } from "./styles";
 
-const Header: React.FC = () => {
+export const Header: React.FC = () => {
   const navigation = useNavigation();
 
   return (
@@ -30,5 +30,3 @@ const Header: React.FC = () => {
     </Container>
   );
 };
-
-export default Header;
