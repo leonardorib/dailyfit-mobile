@@ -37,9 +37,7 @@ export interface IDeleteMealFoodRequest {
 
 const mealFoods = (axiosInstance: AxiosInstance) => {
 	return {
-		getById: (
-			mealFoodId: string
-		): Promise<AxiosResponse<IMealFood>> => {
+		getById: (mealFoodId: string): Promise<AxiosResponse<IMealFood>> => {
 			return axiosInstance.put(`mealfoods/${mealFoodId}`);
 		},
 
