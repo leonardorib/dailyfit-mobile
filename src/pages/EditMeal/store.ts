@@ -37,4 +37,14 @@ export default class Store {
 			Alert.alert("Erro", "Erro ao carregar refeição");
 		}
 	};
+
+	public deleteMealFood = async (mealFoodId: string) => {
+		try {
+			await api.mealFoods.delete({ mealFoodId });
+		} catch (e) {
+			Alert.alert("Erro", "Erro ao deletar refeição");
+		} finally {
+			await this.loadMeal();
+		}
+	}
 }

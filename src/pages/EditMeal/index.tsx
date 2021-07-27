@@ -67,12 +67,12 @@ export const EditMeal: React.FC<IProps> = observer(({ route }) => {
 									fats={localStore.meal.fats}
 								/>
 
-								{localStore.meal.mealFoods.map((food) => (
+								{localStore.meal.mealFoods.map((mealFood) => (
 									<FoodCard
-										key={food.id}
-										mealFood={food}
+										key={mealFood.id}
+										mealFood={mealFood}
 										deleteMealFood={() => {
-											console.log("delete"); // TODO
+											localStore.deleteMealFood(mealFood.id);
 										}}
 										editMealFood={() => {
 											console.log("edit"); // TODO
@@ -87,7 +87,7 @@ export const EditMeal: React.FC<IProps> = observer(({ route }) => {
 						<GoBackButton
 							style={shadowStyles.style}
 							onPress={() => {
-								navigation.goBack();
+								navigation.navigate("DailyDiet");
 							}}
 						>
 							<AntDesign name="back" size={30} color="#76c7c5" />
