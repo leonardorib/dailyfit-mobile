@@ -1,19 +1,20 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Platform, View } from "react-native";
 import {
 	DefaultTheme,
 	Provider as PaperProvider,
 	Modal,
 } from "react-native-paper";
-import { observer } from "mobx-react";
+import { observer, useLocalObservable } from "mobx-react";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { format } from "date-fns";
 import DateTimePickerModal from "react-native-modal-datetime-picker";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { useForm, Controller } from "react-hook-form";
-import { Header, TotalConsumptionBox, Meal } from "../../components";
-import { MealsStoreContext } from "../../stores/MealsStore";
+import { Header, TotalConsumptionBox } from "../../components";
+import { Meal } from "./components";
+import Store from "./store";
 
 import {
 	SafeAreaView,
@@ -36,6 +37,8 @@ import {
 	AddMealModalButtonText,
 	shadowStyles,
 } from "./styles";
+import { useFocusEffect } from "@react-navigation/native";
+import { useCallback } from "react";
 
 export interface IAddFood {
 	foodId: string;
@@ -51,7 +54,7 @@ const addMealSchema = yup.object().shape({
 });
 
 export const DailyDiet: React.FC = observer(() => {
-	const mealsStore = useContext(MealsStoreContext);
+	const store = useLocalObservable(() => new Store());
 	const {
 		selectedDate,
 		setSelectedDate,
@@ -59,7 +62,7 @@ export const DailyDiet: React.FC = observer(() => {
 		subtractDay,
 		getDailyDiet,
 		dailyDiet,
-	} = mealsStore;
+	} = store;
 	const [isAddFoodModalVisible, setIsAddFoodModalVisible] = useState(false);
 	const [showDatePicker, setShowDatePicker] = useState(false);
 	const [isAddMealModalVisible, setIsAddMealModalVisible] = useState(false);
@@ -74,14 +77,14 @@ export const DailyDiet: React.FC = observer(() => {
 	});
 
 	const onSubmitAddMeal = async (formData: AddMealForm) => {
-		await mealsStore.createMeal(formData.mealName);
+		await store.createMeal(formData.mealName);
 	};
 
-	useEffect(() => {
-		getDailyDiet();
-	}, [mealsStore.selectedDate]);
-
-	useEffect(() => {}, [showDatePicker]);
+	useFocusEffect(
+		useCallback(() => {
+			getDailyDiet();
+		}, [store.selectedDate])
+	);
 
 	return (
 		<PaperProvider theme={DefaultTheme}>
@@ -172,7 +175,7 @@ export const DailyDiet: React.FC = observer(() => {
 										<Meal
 											key={meal.id}
 											meal={meal}
-											mealsStore={mealsStore}
+											screenStore={store}
 											isAddFoodModalVisible={
 												isAddFoodModalVisible
 											}

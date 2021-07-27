@@ -2,9 +2,9 @@ import React from "react";
 import { Portal } from "react-native-paper";
 import { observer } from "mobx-react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { MealsStore } from "../../stores/MealsStore";
-import roundOneDecimal from "../../pages/utils/roundOneDecimal";
-import { AddFoodModal } from "../AddFoodModal";
+import ScreenStore from "../../store";
+import roundOneDecimal from "../../../utils/roundOneDecimal";
+import { AddFoodModal } from "../../../../components/AddFoodModal";
 import {
 	Container,
 	Food,
@@ -19,7 +19,7 @@ import {
 	ButtonsBox,
 } from "./styles";
 import { useNavigation } from "@react-navigation/native";
-import { IMeal } from "../../services/api/Meals";
+import { IMeal } from "../../../../services/api/Meals";
 
 export interface IAddFood {
 	foodId: string;
@@ -29,18 +29,18 @@ export interface IAddFood {
 
 interface MealProps {
 	meal: IMeal;
-	mealsStore: MealsStore;
+	screenStore: ScreenStore;
 	isAddFoodModalVisible: boolean;
 	setIsAddFoodModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const Meal: React.FC<MealProps> = observer((props: MealProps) => {
-	const { meal, mealsStore } = props;
+	const { meal, screenStore } = props;
 
 	const { navigate } = useNavigation();
 
 	const handleDeleteMeal = async (mealId: string) => {
-		await mealsStore.deleteMeal({ mealId });
+		await screenStore.deleteMeal({ mealId });
 	};
 
 	const handleAddFood = async ({
@@ -48,7 +48,7 @@ export const Meal: React.FC<MealProps> = observer((props: MealProps) => {
 		quantity,
 		quantity_unit,
 	}: IAddFood) => {
-		await mealsStore.addFoodToMeal({
+		await screenStore.addFoodToMeal({
 			mealId: meal.id,
 			foodId,
 			quantity,

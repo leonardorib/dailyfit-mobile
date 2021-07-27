@@ -1,15 +1,15 @@
 import { createContext } from "react";
-import { action, makeObservable, observable, runInAction } from "mobx";
-import api from "../services/api";
+import { action, makeAutoObservable, makeObservable, observable, runInAction } from "mobx";
+import api from "../../services/api";
 import {
 	IMeal,
 	IUpdateMealNameRequest,
 	IDeleteMealRequest,
-} from "../services/api/Meals";
+} from "../../services/api/Meals";
 import {
 	IAddFoodToMealRequest,
 	IDeleteMealFoodRequest,
-} from "../services/api/MealFoods";
+} from "../../services/api/MealFoods";
 import { addDays, endOfDay, startOfDay, subDays } from "date-fns";
 import { Alert } from "react-native";
 
@@ -25,14 +25,14 @@ export interface IDailyDiet extends INutrients {
 	meals: IMeal[];
 }
 
-export class MealsStore {
+export default class Store {
 	constructor() {
-		makeObservable(this);
+		makeAutoObservable(this);
 	}
 
-	@observable selectedDate: Date = new Date(Date.now());
+	public selectedDate: Date = new Date(Date.now());
 
-	@observable dailyDiet: IDailyDiet = {
+	public dailyDiet: IDailyDiet = {
 		energy_kcal: 0,
 		energy_kj: 0,
 		carbs: 0,
@@ -41,24 +41,24 @@ export class MealsStore {
 		meals: [],
 	};
 
-	@observable isAddMealModalVisible: boolean = false;
+	public isAddMealModalVisible: boolean = false;
 
-	@observable isAddFoodModalVisible: boolean = false;
+	public isAddFoodModalVisible: boolean = false;
 
-	@action setSelectedDate = (date: Date) => {
+	public setSelectedDate = (date: Date) => {
 		this.selectedDate = date;
 	};
 
-	@action subtractDay = () => {
+	public subtractDay = () => {
 		this.selectedDate = subDays(this.selectedDate, 1);
 	};
 
-	@action addDay = () => {
+	public addDay = () => {
 		this.selectedDate = addDays(this.selectedDate, 1);
 	};
 
 	// Meals
-	getDailyDiet = async () => {
+	public getDailyDiet = async () => {
 		try {
 			const response = await api.meals.listByUserAndDate({
 				startDate: startOfDay(this.selectedDate),
@@ -73,7 +73,7 @@ export class MealsStore {
 		}
 	};
 
-	createMeal = async (mealName: string) => {
+	public createMeal = async (mealName: string) => {
 		try {
 			const response = await api.meals.add({
 				name: mealName,
@@ -97,7 +97,7 @@ export class MealsStore {
 		}
 	};
 
-	updateMealName = async ({ mealId, name }: IUpdateMealNameRequest) => {
+	public updateMealName = async ({ mealId, name }: IUpdateMealNameRequest) => {
 		try {
 			await api.meals.update({ mealId, name });
 
@@ -123,7 +123,7 @@ export class MealsStore {
 		}
 	};
 
-	deleteMeal = async ({ mealId }: IDeleteMealRequest) => {
+	public deleteMeal = async ({ mealId }: IDeleteMealRequest) => {
 		try {
 			const response = await api.meals.delete({ mealId });
 
@@ -148,7 +148,7 @@ export class MealsStore {
 	};
 
 	// MealFoods
-	addFoodToMeal = async ({
+	public addFoodToMeal = async ({
 		mealId,
 		foodId,
 		quantity,
@@ -195,7 +195,7 @@ export class MealsStore {
 		}
 	};
 
-	deleteMealFood = async ({ mealFoodId }: IDeleteMealFoodRequest) => {
+	public deleteMealFood = async ({ mealFoodId }: IDeleteMealFoodRequest) => {
 		try {
 			const response = await api.mealFoods.delete({ mealFoodId });
 
@@ -227,5 +227,3 @@ export class MealsStore {
 		}
 	};
 }
-
-export const MealsStoreContext = createContext(new MealsStore());
