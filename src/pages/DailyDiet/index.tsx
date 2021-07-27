@@ -63,7 +63,6 @@ export const DailyDiet: React.FC = observer(() => {
 		getDailyDiet,
 		dailyDiet,
 	} = store;
-	const [isAddFoodModalVisible, setIsAddFoodModalVisible] = useState(false);
 	const [showDatePicker, setShowDatePicker] = useState(false);
 	const [isAddMealModalVisible, setIsAddMealModalVisible] = useState(false);
 
@@ -176,12 +175,6 @@ export const DailyDiet: React.FC = observer(() => {
 											key={meal.id}
 											meal={meal}
 											screenStore={store}
-											isAddFoodModalVisible={
-												isAddFoodModalVisible
-											}
-											setIsAddFoodModalVisible={
-												setIsAddFoodModalVisible
-											}
 										/>
 									);
 								})}

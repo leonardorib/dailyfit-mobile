@@ -20,8 +20,11 @@ import {
 } from "./styles";
 import { useNavigation } from "@react-navigation/native";
 import { IMeal } from "../../../../services/api/Meals";
+import { useCallback } from "react";
+import { useState } from "react";
 
 export interface IAddFood {
+	mealId: string;
 	foodId: string;
 	quantity: number;
 	quantity_unit: string;
@@ -30,8 +33,6 @@ export interface IAddFood {
 interface MealProps {
 	meal: IMeal;
 	screenStore: ScreenStore;
-	isAddFoodModalVisible: boolean;
-	setIsAddFoodModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const Meal: React.FC<MealProps> = observer((props: MealProps) => {
@@ -39,22 +40,26 @@ export const Meal: React.FC<MealProps> = observer((props: MealProps) => {
 
 	const { navigate } = useNavigation();
 
+	const [isAddFoodModalVisible, setIsAddFoodModalVisible] = useState(false);
+
 	const handleDeleteMeal = async (mealId: string) => {
 		await screenStore.deleteMeal({ mealId });
 	};
 
-	const handleAddFood = async ({
+	const handleAddFood = useCallback (async ({
+		mealId,
 		foodId,
 		quantity,
 		quantity_unit,
 	}: IAddFood) => {
+		console.log("add food to: ", {name: meal.name, id: meal.id});
 		await screenStore.addFoodToMeal({
-			mealId: meal.id,
+			mealId,
 			foodId,
 			quantity,
 			quantity_unit,
 		});
-	};
+	}, [meal.id]);
 
 	return (
 		<Container style={shadowStyles.style}>
@@ -106,17 +111,19 @@ export const Meal: React.FC<MealProps> = observer((props: MealProps) => {
 
 			<AddFoodButton
 				onPress={() => {
-					props.setIsAddFoodModalVisible(true);
+					console.log({id: meal.id, name: meal.name})
+					setIsAddFoodModalVisible(true);
 				}}
 			>
 				<AddFoodText>+ Adicionar alimento</AddFoodText>
 			</AddFoodButton>
 			<Portal>
 				<AddFoodModal
+					key={meal.id}
 					meal={meal}
 					handleAddFood={handleAddFood}
-					isAddFoodModalVisible={props.isAddFoodModalVisible}
-					setIsAddFoodModalVisible={props.setIsAddFoodModalVisible}
+					isAddFoodModalVisible={isAddFoodModalVisible}
+					setIsAddFoodModalVisible={setIsAddFoodModalVisible}
 				/>
 			</Portal>
 		</Container>

@@ -30,6 +30,7 @@ import {
 import { observer } from "mobx-react";
 
 interface IAddFood {
+	mealId: string;
 	foodId: string;
 	quantity: number;
 	quantity_unit: string;
@@ -95,6 +96,7 @@ export const AddFoodModal: React.FC<IAddFoodModalProps> = observer(
 		const onSubmitAddFood = async (formData: FoodQuantityInput) => {
 			if (selectedFood) {
 				await handleAddFood({
+					mealId: props.meal.id,
 					foodId: selectedFood?.id,
 					quantity: formData.quantity,
 					quantity_unit: "g",
@@ -305,6 +307,7 @@ export const AddFoodModal: React.FC<IAddFoodModalProps> = observer(
 								setSelectedFood(undefined);
 								setFoods([]);
 								setSearchInput("");
+								console.log("canceling modal in meal: ", {id: props.meal.id, name: props.meal.name});
 							}}
 						>
 							<ModalButtonText>Cancelar</ModalButtonText>
