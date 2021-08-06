@@ -15,46 +15,18 @@ import {
 	SelectFoodText,
 	FoodContainer,
 	FoodName,
-	SelectedFoodContainer,
-	QuantityInput,
-	UnitRow,
-	UnitText,
-	NutrientsRow,
-	IndividualNutrientBox,
-	NutrientText,
-	ModalButtonsRow,
-	ModalButton,
-	ModalButtonText,
 	shadowStyles,
 } from "./styles";
 import { observer } from "mobx-react";
-
-interface IAddFood {
-	mealId: string;
-	foodId: string;
-	quantity: number;
-	quantity_unit: string;
-}
-
-interface Food {
-	id: string;
-	name: string;
-	standard_quantity: number;
-	energy_kcal: number;
-	energy_kj: number;
-	carbs: number;
-	proteins: number;
-	fats: number;
-}
-
-interface NutrientsConsumed {
-	quantity: number;
-	energy_kcal: number;
-	energy_kj: number;
-	carbs: number;
-	proteins: number;
-	fats: number;
-}
+import { QuantityInputForm } from "../QuantityInputForm";
+import { QuantityFormButtons } from "../QuantityFormButtons";
+import { INutrients } from "../../services/api/Nutrients";
+import { IFood } from "../../services/api/Foods";
+import {
+	IAddFoodToMealRequest,
+	IMealFood,
+	IUpdateMealFoodRequest,
+} from "../../services/api/MealFoods";
 
 interface FoodQuantityInput {
 	quantity: number;
@@ -64,30 +36,36 @@ const foodQuantitySchema = yup.object().shape({
 	quantity: yup.number().moreThan(0).required(),
 });
 
-interface IAddFoodModalProps {
+interface IQuantityFoodModalProps {
 	meal: IMeal;
+	mode: "addMealFood" | "editMealFood";
+	initialMealFood?: IMealFood;
 	isAddFoodModalVisible: boolean;
-	handleAddFood: (addFoodData: IAddFood) => Promise<void>;
+	handleAddFood: (addFoodData: IAddFoodToMealRequest) => Promise<void>;
+	handleEditFood: (editFoodData: IUpdateMealFoodRequest) => Promise<void>;
 	setIsAddFoodModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+	onSubmit?: () => void;
 }
 
-export const AddFoodModal: React.FC<IAddFoodModalProps> = observer(
-	(props: IAddFoodModalProps) => {
-		const { handleAddFood } = props;
+const initialNutrients: INutrients = {
+	quantity: 0,
+	energy_kcal: 0,
+	energy_kj: 0,
+	carbs: 0,
+	proteins: 0,
+	fats: 0,
+};
+
+export const QuantityFoodModal: React.FC<IQuantityFoodModalProps> = observer(
+	(props: IQuantityFoodModalProps) => {
+		const { handleAddFood, handleEditFood, mode, initialMealFood, onSubmit } = props;
 		const [searchInput, setSearchInput] = useState("");
-		const [foods, setFoods] = useState<Food[]>([]);
-		const [selectedFood, setSelectedFood] = useState<Food | undefined>(
+		const [foods, setFoods] = useState<IFood[]>([]);
+		const [selectedFood, setSelectedFood] = useState<IFood | undefined>(
 			undefined
 		);
 		const [nutrientsConsumed, setNutrientsConsumed] =
-			useState<NutrientsConsumed>({
-				quantity: 0,
-				energy_kcal: 0,
-				energy_kj: 0,
-				carbs: 0,
-				proteins: 0,
-				fats: 0,
-			});
+			useState<INutrients>(initialNutrients);
 
 		const { control, handleSubmit, errors } = useForm<FoodQuantityInput>({
 			resolver: yupResolver(foodQuantitySchema),
@@ -103,11 +81,33 @@ export const AddFoodModal: React.FC<IAddFoodModalProps> = observer(
 				});
 			}
 
+			if (onSubmit) {
+				onSubmit();
+			}
+
 			props.setIsAddFoodModalVisible(false);
 
 			setSelectedFood(undefined);
 			setFoods([]);
 			setSearchInput("");
+			setNutrientsConsumed(initialNutrients);
+		};
+
+		const onSubmitEditMealFood = async (formData: FoodQuantityInput) => {
+			if (!initialMealFood) {
+				return;
+			}
+			await handleEditFood({
+				foodId: initialMealFood.food_id,
+				mealFoodId:initialMealFood.id,
+				quantity: formData.quantity,
+			});
+			setSelectedFood(undefined);
+			setNutrientsConsumed(initialNutrients);
+			if (onSubmit) {
+				onSubmit();
+			}
+			props.setIsAddFoodModalVisible(false);
 		};
 
 		const onChangeSearchInput = (value: string) => {
@@ -116,14 +116,7 @@ export const AddFoodModal: React.FC<IAddFoodModalProps> = observer(
 
 		const onChangeQuantityInput = (value: number) => {
 			if (Number.isNaN(value)) {
-				setNutrientsConsumed({
-					quantity: 0,
-					energy_kcal: 0,
-					energy_kj: 0,
-					carbs: 0,
-					proteins: 0,
-					fats: 0,
-				});
+				setNutrientsConsumed(initialNutrients);
 
 				return;
 			}
@@ -159,6 +152,7 @@ export const AddFoodModal: React.FC<IAddFoodModalProps> = observer(
 		useEffect(() => {
 			const quantityInput = control.getValues().quantity;
 			if (quantityInput) onChangeQuantityInput(quantityInput);
+			if(initialMealFood) setSelectedFood(initialMealFood.food);
 		}, [selectedFood]);
 
 		useEffect(() => {
@@ -187,17 +181,20 @@ export const AddFoodModal: React.FC<IAddFoodModalProps> = observer(
 				<Container
 					behavior={Platform.OS === "ios" ? "padding" : undefined}
 					keyboardVerticalOffset={30}
+					isAdding={mode === "addMealFood"}
 				>
-					<SearchInput
-						placeholder="Procure por um alimento"
-						onChangeText={onChangeSearchInput}
-						value={searchInput}
-						autoFocus={true}
-						onBlur={Keyboard.dismiss}
-						clearIcon="delete"
-					/>
+					{mode === "addMealFood" && (
+						<SearchInput
+							placeholder="Procure por um alimento"
+							onChangeText={onChangeSearchInput}
+							value={searchInput}
+							autoFocus={true}
+							onBlur={Keyboard.dismiss}
+							clearIcon="delete"
+						/>
+					)}
 
-					{foods.length > 0 && (
+					{foods.length > 0 && mode === "addMealFood" && (
 						<>
 							<SelectFoodText>
 								Toque para selecionar o alimento
@@ -219,8 +216,6 @@ export const AddFoodModal: React.FC<IAddFoodModalProps> = observer(
 											style={shadowStyles.style}
 											isSelected={
 												item.id === selectedFood?.id
-													? true
-													: false
 											}
 											onPress={() => {
 												setSelectedFood(item);
@@ -229,8 +224,6 @@ export const AddFoodModal: React.FC<IAddFoodModalProps> = observer(
 											<FoodName
 												isSelected={
 													item.id === selectedFood?.id
-														? true
-														: false
 												}
 											>
 												{item.name}
@@ -243,83 +236,38 @@ export const AddFoodModal: React.FC<IAddFoodModalProps> = observer(
 					)}
 
 					{selectedFood && (
-						<SelectedFoodContainer>
-							<SelectFoodText>
-								Informe a quantidade
-							</SelectFoodText>
-							<UnitRow>
-								<Controller
-									control={control}
-									name="quantity"
-									defaultValue=""
-									render={({ value, onChange }) => {
-										1;
-										return (
-											<QuantityInput
-												value={value}
-												onChangeText={(value) => {
-													onChange(value);
+						<Controller
+							control={control}
+							name="quantity"
+							defaultValue=""
+							render={({ value, onChange }) => (
+								<QuantityInputForm
+									value={value}
+									onChangeText={(value) => {
+										onChange(value);
 
-													onChangeQuantityInput(
-														Number(value)
-													);
-												}}
-												keyboardType="numbers-and-punctuation"
-											/>
-										);
+										onChangeQuantityInput(Number(value));
 									}}
+									nutrients={nutrientsConsumed}
 								/>
-
-								<UnitText>gramas</UnitText>
-							</UnitRow>
-							<NutrientsRow>
-								<IndividualNutrientBox>
-									<NutrientText>Calorias</NutrientText>
-									<NutrientText>
-										{nutrientsConsumed.energy_kcal} kcal
-									</NutrientText>
-								</IndividualNutrientBox>
-								<IndividualNutrientBox>
-									<NutrientText>Carboidratos</NutrientText>
-									<NutrientText>
-										{nutrientsConsumed.carbs} g
-									</NutrientText>
-								</IndividualNutrientBox>
-								<IndividualNutrientBox>
-									<NutrientText>Proteínas</NutrientText>
-									<NutrientText>
-										{nutrientsConsumed.proteins} g
-									</NutrientText>
-								</IndividualNutrientBox>
-								<IndividualNutrientBox>
-									<NutrientText>Gorduras</NutrientText>
-									<NutrientText>
-										{nutrientsConsumed.fats} g
-									</NutrientText>
-								</IndividualNutrientBox>
-							</NutrientsRow>
-						</SelectedFoodContainer>
+							)}
+						/>
 					)}
-					<ModalButtonsRow>
-						<ModalButton
-							onPress={() => {
-								props.setIsAddFoodModalVisible(false);
-								setSelectedFood(undefined);
-								setFoods([]);
-								setSearchInput("");
-								console.log("canceling modal in meal: ", {id: props.meal.id, name: props.meal.name});
-							}}
-						>
-							<ModalButtonText>Cancelar</ModalButtonText>
-						</ModalButton>
-						<ModalButton
-							onPress={() => {
-								handleSubmit(onSubmitAddFood)();
-							}}
-						>
-							<ModalButtonText>OK</ModalButtonText>
-						</ModalButton>
-					</ModalButtonsRow>
+					<QuantityFormButtons
+						onConfirm={() => {
+							handleSubmit(
+								mode === "addMealFood"
+									? onSubmitAddFood
+									: onSubmitEditMealFood
+							)();
+						}}
+						onCancel={() => {
+							props.setIsAddFoodModalVisible(false);
+							setSelectedFood(undefined);
+							setFoods([]);
+							setSearchInput("");
+						}}
+					/>
 				</Container>
 			</Modal>
 		);

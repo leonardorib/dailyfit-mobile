@@ -2,17 +2,27 @@ import styled, { css } from "styled-components/native";
 import { Searchbar } from "react-native-paper";
 import { RectButton } from "react-native-gesture-handler";
 import { StyleSheet, Dimensions } from "react-native";
-import { Modal } from "react-native-paper";
+
+interface ContainerProps {
+	isAdding: boolean;
+}
 
 interface FoodContainerProps {
 	isSelected: boolean;
 }
 
-export const Container = styled.KeyboardAvoidingView`
+export const Container = styled.KeyboardAvoidingView<ContainerProps>`
 	align-items: center;
+	justify-content: flex-end;
 	background-color: #e5e5e5;
-	min-height: 400px;
+	padding-top: 20px;
 	max-height: 95%;
+
+	${(props) =>
+		props.isAdding &&
+		css`
+			min-height: 400px;
+		`}
 `;
 
 export const SearchInput = styled(Searchbar)`
@@ -64,73 +74,7 @@ export const FoodName = styled.Text<FoodContainerProps>`
 		`}
 `;
 
-export const SelectedFoodContainer = styled.View`
-	width: 95%;
-	margin-bottom: 20px;
-`;
-
-export const UnitRow = styled.View`
-	align-items: center;
-	justify-content: center;
-	flex-direction: row;
-`;
-
-export const QuantityInput = styled.TextInput`
-	background-color: #fff;
-	padding-left: 10px;
-	height: 35px;
-	width: 120px;
-	border-radius: 5px;
-	margin-right: 10px;
-	margin-left: 28px;
-	font-family: Roboto_400Regular;
-	font-size: 16px;
-`;
-
-export const UnitText = styled.Text`
-	color: #444540;
-`;
-
 export const CaloriesText = styled.Text``;
-
-export const NutrientsRow = styled.View`
-	flex-direction: row;
-	justify-content: center;
-	margin-top: 10px;
-`;
-
-export const IndividualNutrientBox = styled.View`
-	align-items: center;
-	margin-left: 10px;
-	margin-right: 10px;
-`;
-
-export const NutrientText = styled.Text`
-	color: #444540;
-`;
-
-export const ModalButtonsRow = styled.View`
-	flex-direction: row;
-	margin-top: auto;
-`;
-
-export const ModalButton = styled(RectButton)`
-	background-color: #76c7c5;
-	width: 100px;
-	height: 40px;
-	align-items: center;
-	justify-content: center;
-	border-radius: 8px;
-	margin-bottom: 15px;
-	margin-left: 20px;
-	margin-right: 20px;
-`;
-
-export const ModalButtonText = styled.Text`
-	font-family: Roboto_700Bold;
-	color: #fff;
-	font-size: 16px;
-`;
 
 export const shadowStyles = StyleSheet.create({
 	style: {

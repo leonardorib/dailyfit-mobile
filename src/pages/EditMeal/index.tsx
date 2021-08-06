@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { Platform, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
@@ -6,6 +6,7 @@ import {
 	DefaultTheme,
 	Provider as PaperProvider,
 	Modal,
+	Portal,
 } from "react-native-paper";
 import { observer, useLocalObservable } from "mobx-react";
 import {
@@ -13,6 +14,7 @@ import {
 	TotalConsumptionBox,
 	FoodCard,
 	Loading,
+	QuantityFoodModal,
 } from "../../components";
 import {
 	SafeAreaView,
@@ -29,6 +31,11 @@ import {
 	GoBackButton,
 } from "./styles";
 import Store from "./store";
+import {
+	IAddFoodToMealRequest,
+	IUpdateMealFoodRequest,
+} from "../../services/api/MealFoods";
+import api from "../../services/api";
 
 interface IProps {
 	route: any;
@@ -37,6 +44,36 @@ interface IProps {
 export const EditMeal: React.FC<IProps> = observer(({ route }) => {
 	const localStore = useLocalObservable(() => new Store(route.params.mealId));
 	const [isAddFoodModalVisible, setIsAddFoodModalVisible] = useState(false);
+	const [isEditMealFoodModalVisible, setIsEditMealFoodModalVisible] =
+		useState(false);
+	const { selectedMealFood, setMealFood } = localStore;
+	const handleAddFood = useCallback(
+		async ({
+			mealId,
+			foodId,
+			quantity,
+			quantity_unit,
+		}: IAddFoodToMealRequest) => {
+			await api.mealFoods.addFoodToMeal({
+				mealId,
+				foodId,
+				quantity,
+				quantity_unit,
+			});
+		},
+		[]
+	);
+
+	const handleEditFood = useCallback(
+		async ({ mealFoodId, foodId, quantity }: IUpdateMealFoodRequest) => {
+			await api.mealFoods.update({
+				mealFoodId,
+				foodId,
+				quantity,
+			});
+		},
+		[]
+	);
 
 	const navigation = useNavigation();
 
@@ -72,13 +109,51 @@ export const EditMeal: React.FC<IProps> = observer(({ route }) => {
 										key={mealFood.id}
 										mealFood={mealFood}
 										deleteMealFood={() => {
-											localStore.deleteMealFood(mealFood.id);
+											localStore.deleteMealFood(
+												mealFood.id
+											);
 										}}
 										editMealFood={() => {
-											console.log("edit"); // TODO
+											setMealFood(mealFood);
+											setIsEditMealFoodModalVisible(true);
 										}}
 									/>
 								))}
+								{/* Edit Meal Food Modal */}
+								<Portal>
+									{selectedMealFood && (
+										<QuantityFoodModal
+											meal={localStore.meal}
+											setIsAddFoodModalVisible={
+												setIsEditMealFoodModalVisible
+											}
+											isAddFoodModalVisible={
+												isEditMealFoodModalVisible
+											}
+											mode="editMealFood"
+											initialMealFood={selectedMealFood}
+											handleAddFood={handleAddFood}
+											handleEditFood={handleEditFood}
+											onSubmit={localStore.loadMeal}
+										/>
+									)}
+								</Portal>
+								{/*Add Meal Food Modal */}
+								<Portal>
+									<QuantityFoodModal
+										meal={localStore.meal}
+										setIsAddFoodModalVisible={
+											setIsAddFoodModalVisible
+										}
+										isAddFoodModalVisible={
+											isAddFoodModalVisible
+										}
+										mode="addMealFood"
+										handleAddFood={handleAddFood}
+										handleEditFood={handleEditFood}
+										onSubmit={localStore.loadMeal}
+									/>
+								</Portal>
 							</Container>
 						)}
 					</ScrollView>
@@ -122,6 +197,7 @@ export const EditMeal: React.FC<IProps> = observer(({ route }) => {
 						<Text>Teste</Text>
 					</View>
 				</Modal>
+			
 			</SafeAreaView>
 		</PaperProvider>
 	);

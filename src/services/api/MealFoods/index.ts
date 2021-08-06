@@ -26,7 +26,7 @@ export interface IAddFoodToMealRequest {
 	quantity_unit: string;
 }
 
-interface IUpdateMealFoodRequest {
+export interface IUpdateMealFoodRequest {
 	mealFoodId: string;
 	quantity: number;
 	foodId: string;

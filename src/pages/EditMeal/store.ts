@@ -2,6 +2,7 @@ import { makeAutoObservable, runInAction } from "mobx";
 import api from "../../services/api";
 import { IMeal } from "../../services/api/Meals";
 import { Alert } from "react-native";
+import { IMealFood } from "../../services/api/MealFoods";
 
 export interface INutrients {
 	energy_kcal: number;
@@ -20,10 +21,16 @@ export default class Store {
 
 	public meal: IMeal | null = null;
 
+	public selectedMealFood: IMealFood | null = null;
+
 	constructor(mealId: string) {
 		makeAutoObservable(this);
 		this.mealId = mealId;
 		this.loadMeal();
+	}
+
+	public setMealFood = (mealFood: IMealFood | null) => {
+		this.selectedMealFood = mealFood;
 	}
 
 	public loadMeal = async () => {

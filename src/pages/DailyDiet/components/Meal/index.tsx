@@ -4,7 +4,7 @@ import { observer } from "mobx-react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import ScreenStore from "../../store";
 import roundOneDecimal from "../../../utils/roundOneDecimal";
-import { AddFoodModal } from "../../../../components/AddFoodModal";
+import { QuantityFoodModal } from "../../../../components/QuantityFoodModal";
 import {
 	Container,
 	Food,
@@ -22,14 +22,8 @@ import { useNavigation } from "@react-navigation/native";
 import { IMeal } from "../../../../services/api/Meals";
 import { useCallback } from "react";
 import { useState } from "react";
-
-export interface IAddFood {
-	mealId: string;
-	foodId: string;
-	quantity: number;
-	quantity_unit: string;
-}
-
+import { IAddFoodToMealRequest, IUpdateMealFoodRequest } from "../../../../services/api/MealFoods";
+import api from "../../../../services/api";
 interface MealProps {
 	meal: IMeal;
 	screenStore: ScreenStore;
@@ -51,8 +45,7 @@ export const Meal: React.FC<MealProps> = observer((props: MealProps) => {
 		foodId,
 		quantity,
 		quantity_unit,
-	}: IAddFood) => {
-		console.log("add food to: ", {name: meal.name, id: meal.id});
+	}: IAddFoodToMealRequest) => {
 		await screenStore.addFoodToMeal({
 			mealId,
 			foodId,
@@ -60,6 +53,18 @@ export const Meal: React.FC<MealProps> = observer((props: MealProps) => {
 			quantity_unit,
 		});
 	}, [meal.id]);
+
+	const handleEditFood = useCallback (async ({
+		mealFoodId,
+		foodId,
+		quantity,
+	}: IUpdateMealFoodRequest) => {
+		await api.mealFoods.update({
+			mealFoodId,
+			foodId,
+			quantity,
+		})
+	}, []);
 
 	return (
 		<Container style={shadowStyles.style}>
@@ -111,17 +116,18 @@ export const Meal: React.FC<MealProps> = observer((props: MealProps) => {
 
 			<AddFoodButton
 				onPress={() => {
-					console.log({id: meal.id, name: meal.name})
 					setIsAddFoodModalVisible(true);
 				}}
 			>
 				<AddFoodText>+ Adicionar alimento</AddFoodText>
 			</AddFoodButton>
 			<Portal>
-				<AddFoodModal
+				<QuantityFoodModal
 					key={meal.id}
 					meal={meal}
+					mode="addMealFood"
 					handleAddFood={handleAddFood}
+					handleEditFood={handleEditFood}
 					isAddFoodModalVisible={isAddFoodModalVisible}
 					setIsAddFoodModalVisible={setIsAddFoodModalVisible}
 				/>
