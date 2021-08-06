@@ -74,7 +74,6 @@ export const SignUp: React.FC = () => {
 					},
 				]
 			);
-			console.log(response.data);
 		} catch (error) {
 			Alert.alert("Erro no cadastro", "Tente novamente");
 			console.error(error);

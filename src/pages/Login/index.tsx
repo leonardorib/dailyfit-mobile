@@ -50,7 +50,6 @@ export const Login: React.FC = () => {
 	const navigation = useNavigation();
 
 	const onSubmit = (formData: FormData) => {
-		console.log(formData);
 		handleSignIn(formData);
 	};
 
