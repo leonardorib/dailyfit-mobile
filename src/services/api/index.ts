@@ -4,8 +4,15 @@ import foods from "./Foods";
 import mealFoods from "./MealFoods";
 import users from "./Users";
 
+const productionApiUrl = "https://api.dailyfit.leonardoribeiro.com";
+const developmentApiUrl = "http://192.168.1.71:3334";
+
+const isProduction = process.env.NODE_ENV === "production";
+
+const apiUrl = isProduction ? productionApiUrl : developmentApiUrl;
+
 export const axiosInstance = axios.create({
-	baseURL: "http://192.168.1.71:3333",
+	baseURL: apiUrl,
 });
 
 const api = {
