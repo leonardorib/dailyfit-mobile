@@ -21,7 +21,7 @@ export default class Store {
 
 	public meal: IMeal | null = null;
 
-	public selectedMealFood: IMealFood | null = null;
+	public selectedMealFood: IMealFood | undefined = undefined;
 
 	constructor(mealId: string) {
 		makeAutoObservable(this);
@@ -29,7 +29,7 @@ export default class Store {
 		this.loadMeal();
 	}
 
-	public setMealFood = (mealFood: IMealFood | null) => {
+	public setMealFood = (mealFood: IMealFood | undefined) => {
 		this.selectedMealFood = mealFood;
 	}
 
