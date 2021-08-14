@@ -32,16 +32,21 @@ export const MealHeader = styled.View`
 	flex-direction: row;
 `;
 
+export const MealNameTextContainer = styled.View`
+	flex-shrink: 1;
+	margin-right: 10px;
+`;
+
 export const MealNameText = styled.Text`
 	font-size: 18px;
 	margin-left: 20px;
 	margin-bottom: 10px;
-	margin-right: auto;
-	font-family: Roboto_400Regular;
+	font-family: Roboto_700Bold;
 	color: #000;
 `;
 
 export const ButtonsBox = styled.View`
+	margin-left: auto;
 	flex-direction: row;
 `;
 

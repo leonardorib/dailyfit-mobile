@@ -1,6 +1,6 @@
 import React from "react";
 import { observer } from "mobx-react";
-import roundOneDecimal from "../../pages/utils/roundOneDecimal";
+import { formatNutrient } from "../../services/format"
 import {
 	Container,
 	TotalConsumptionTitle,
@@ -23,20 +23,20 @@ export const TotalConsumptionBox: React.FC<IProps> = observer((props) => {
 	return (
 		<Container style={shadowStyles.style}>
 			<TotalConsumptionTitle>
-				Total: {roundOneDecimal(energy_kcal)} calorias
+				Total: {formatNutrient(energy_kcal)} calorias
 			</TotalConsumptionTitle>
 			<NutrientsOutterBox>
 				<NutrientInnerBox>
 					<NutrientsText>Carboidratos</NutrientsText>
-					<NutrientsText>{roundOneDecimal(carbs)} g</NutrientsText>
+					<NutrientsText>{formatNutrient(carbs)} g</NutrientsText>
 				</NutrientInnerBox>
 				<NutrientInnerBox>
 					<NutrientsText>Proteínas</NutrientsText>
-					<NutrientsText>{roundOneDecimal(proteins)} g</NutrientsText>
+					<NutrientsText>{formatNutrient(proteins)} g</NutrientsText>
 				</NutrientInnerBox>
 				<NutrientInnerBox>
 					<NutrientsText>Gorduras</NutrientsText>
-					<NutrientsText>{roundOneDecimal(fats)} g</NutrientsText>
+					<NutrientsText>{formatNutrient(fats)} g</NutrientsText>
 				</NutrientInnerBox>
 			</NutrientsOutterBox>
 		</Container>

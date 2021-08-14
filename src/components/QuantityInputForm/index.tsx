@@ -9,6 +9,7 @@ import {
 	IndividualNutrientBox,
 	NutrientText,
 } from "./styles";
+import { formatNutrient } from "../../services/format"
 import { observer } from "mobx-react";
 import { INutrients } from "../../services/api/Nutrients";
 
@@ -39,22 +40,22 @@ export const QuantityInputForm: React.FC<IQuantityInputProps> = observer(
 					<IndividualNutrientBox>
 						<NutrientText>Calorias</NutrientText>
 						<NutrientText>
-							{nutrients.energy_kcal} kcal
+							{formatNutrient(nutrients.energy_kcal)} kcal
 						</NutrientText>
 					</IndividualNutrientBox>
 					<IndividualNutrientBox>
 						<NutrientText>Carboidratos</NutrientText>
-						<NutrientText>{nutrients.carbs} g</NutrientText>
+						<NutrientText>{formatNutrient(nutrients.carbs)} g</NutrientText>
 					</IndividualNutrientBox>
 					<IndividualNutrientBox>
 						<NutrientText>Proteínas</NutrientText>
 						<NutrientText>
-							{nutrients.proteins} g
+							{formatNutrient(nutrients.proteins)} g
 						</NutrientText>
 					</IndividualNutrientBox>
 					<IndividualNutrientBox>
 						<NutrientText>Gorduras</NutrientText>
-						<NutrientText>{nutrients.fats} g</NutrientText>
+						<NutrientText>{formatNutrient(nutrients.fats)} g</NutrientText>
 					</IndividualNutrientBox>
 				</NutrientsRow>
 			</Container>
