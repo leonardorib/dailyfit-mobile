@@ -75,6 +75,15 @@ export const EditMeal: React.FC<IProps> = observer(({ route }) => {
 		[]
 	);
 
+	const closeEditModal = () => {
+		setIsEditMealFoodModalVisible(false);
+		setMealFood(undefined);
+	}
+
+	const closeAddModal = () => {
+		setIsAddFoodModalVisible(false);
+	}
+
 	const navigation = useNavigation();
 
 	return (
@@ -121,33 +130,23 @@ export const EditMeal: React.FC<IProps> = observer(({ route }) => {
 								))}
 								{/* Edit Meal Food Modal */}
 								<Portal>
-									{selectedMealFood && (
-										<QuantityFoodModal
-											meal={localStore.meal}
-											setIsAddFoodModalVisible={
-												setIsEditMealFoodModalVisible
-											}
-											isAddFoodModalVisible={
-												isEditMealFoodModalVisible
-											}
-											mode="editMealFood"
-											initialMealFood={selectedMealFood}
-											handleAddFood={handleAddFood}
-											handleEditFood={handleEditFood}
-											onSubmit={localStore.loadMeal}
-										/>
-									)}
+									<QuantityFoodModal
+										meal={localStore.meal}
+										isVisible={isEditMealFoodModalVisible}
+										closeModal={closeEditModal}
+										mode="editMealFood"
+										initialMealFood={selectedMealFood}
+										handleAddFood={handleAddFood}
+										handleEditFood={handleEditFood}
+										onSubmit={localStore.loadMeal}
+									/>
 								</Portal>
 								{/*Add Meal Food Modal */}
 								<Portal>
 									<QuantityFoodModal
 										meal={localStore.meal}
-										setIsAddFoodModalVisible={
-											setIsAddFoodModalVisible
-										}
-										isAddFoodModalVisible={
-											isAddFoodModalVisible
-										}
+										isVisible={isAddFoodModalVisible}
+										closeModal={closeAddModal}
 										mode="addMealFood"
 										handleAddFood={handleAddFood}
 										handleEditFood={handleEditFood}
@@ -197,7 +196,6 @@ export const EditMeal: React.FC<IProps> = observer(({ route }) => {
 						<Text>Teste</Text>
 					</View>
 				</Modal>
-			
 			</SafeAreaView>
 		</PaperProvider>
 	);
