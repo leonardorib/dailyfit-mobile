@@ -3,7 +3,6 @@ import { Keyboard, Platform } from "react-native";
 import { Modal } from "react-native-paper";
 import { FlatList } from "react-native-gesture-handler";
 import api from "../../services/api";
-import roundOneDecimal from "../../pages/utils/roundOneDecimal";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
@@ -40,10 +39,10 @@ interface IQuantityFoodModalProps {
 	meal: IMeal;
 	mode: "addMealFood" | "editMealFood";
 	initialMealFood?: IMealFood;
-	isAddFoodModalVisible: boolean;
+	isVisible: boolean;
 	handleAddFood: (addFoodData: IAddFoodToMealRequest) => Promise<void>;
 	handleEditFood: (editFoodData: IUpdateMealFoodRequest) => Promise<void>;
-	setIsAddFoodModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
+	closeModal: () => void;
 	onSubmit?: () => void;
 }
 
@@ -58,7 +57,7 @@ const initialNutrients: INutrients = {
 
 export const QuantityFoodModal: React.FC<IQuantityFoodModalProps> = observer(
 	(props: IQuantityFoodModalProps) => {
-		const { handleAddFood, handleEditFood, mode, initialMealFood, onSubmit } = props;
+		const { handleAddFood, handleEditFood, mode, initialMealFood, onSubmit, closeModal } = props;
 		const [searchInput, setSearchInput] = useState("");
 		const [foods, setFoods] = useState<IFood[]>([]);
 		const [selectedFood, setSelectedFood] = useState<IFood | undefined>(
@@ -85,7 +84,7 @@ export const QuantityFoodModal: React.FC<IQuantityFoodModalProps> = observer(
 				onSubmit();
 			}
 
-			props.setIsAddFoodModalVisible(false);
+			closeModal();
 
 			setSelectedFood(undefined);
 			setFoods([]);
@@ -107,7 +106,7 @@ export const QuantityFoodModal: React.FC<IQuantityFoodModalProps> = observer(
 			if (onSubmit) {
 				onSubmit();
 			}
-			props.setIsAddFoodModalVisible(false);
+			closeModal();
 		};
 
 		const onChangeSearchInput = (value: string) => {
@@ -126,19 +125,11 @@ export const QuantityFoodModal: React.FC<IQuantityFoodModalProps> = observer(
 
 				setNutrientsConsumed({
 					quantity: value,
-					energy_kcal: roundOneDecimal(
-						proportionFactor * selectedFood.energy_kcal
-					),
-					energy_kj: roundOneDecimal(
-						proportionFactor * selectedFood.energy_kj
-					),
-					carbs: roundOneDecimal(
-						proportionFactor * selectedFood.carbs
-					),
-					proteins: roundOneDecimal(
-						proportionFactor * selectedFood.proteins
-					),
-					fats: roundOneDecimal(proportionFactor * selectedFood.fats),
+					energy_kcal: proportionFactor * selectedFood.energy_kcal,
+					energy_kj: proportionFactor * selectedFood.energy_kj,
+					carbs: proportionFactor * selectedFood.carbs,
+					proteins: proportionFactor * selectedFood.proteins,
+					fats: proportionFactor * selectedFood.fats,
 				});
 			}
 		};
@@ -152,8 +143,11 @@ export const QuantityFoodModal: React.FC<IQuantityFoodModalProps> = observer(
 		useEffect(() => {
 			const quantityInput = control.getValues().quantity;
 			if (quantityInput) onChangeQuantityInput(quantityInput);
-			if(initialMealFood) setSelectedFood(initialMealFood.food);
 		}, [selectedFood]);
+
+		useEffect(() => {
+			if(initialMealFood) setSelectedFood(initialMealFood.food);
+		}, [initialMealFood]);
 
 		useEffect(() => {
 			const timeOut = setTimeout(() => {
@@ -170,9 +164,9 @@ export const QuantityFoodModal: React.FC<IQuantityFoodModalProps> = observer(
 
 		return (
 			<Modal
-				visible={props.isAddFoodModalVisible}
+				visible={props.isVisible}
 				onDismiss={() => {
-					props.setIsAddFoodModalVisible(false);
+					closeModal();
 					setSelectedFood(undefined);
 					setFoods([]);
 					setSearchInput("");
@@ -260,12 +254,14 @@ export const QuantityFoodModal: React.FC<IQuantityFoodModalProps> = observer(
 									? onSubmitAddFood
 									: onSubmitEditMealFood
 							)();
+							setNutrientsConsumed(initialNutrients);
 						}}
 						onCancel={() => {
-							props.setIsAddFoodModalVisible(false);
+							closeModal();
 							setSelectedFood(undefined);
 							setFoods([]);
 							setSearchInput("");
+							setNutrientsConsumed(initialNutrients);
 						}}
 					/>
 				</Container>

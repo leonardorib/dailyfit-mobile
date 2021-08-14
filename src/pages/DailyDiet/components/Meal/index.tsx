@@ -3,12 +3,13 @@ import { Portal } from "react-native-paper";
 import { observer } from "mobx-react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import ScreenStore from "../../store";
-import roundOneDecimal from "../../../utils/roundOneDecimal";
+import { formatNutrient } from "../../../../services/format";
 import { QuantityFoodModal } from "../../../../components/QuantityFoodModal";
 import {
 	Container,
 	Food,
 	MealHeader,
+	MealNameTextContainer,
 	MealNameText,
 	ActionButton,
 	FoodNameText,
@@ -35,6 +36,10 @@ export const Meal: React.FC<MealProps> = observer((props: MealProps) => {
 	const { navigate } = useNavigation();
 
 	const [isAddFoodModalVisible, setIsAddFoodModalVisible] = useState(false);
+
+	const closeAddModal = () => {
+		setIsAddFoodModalVisible(false);
+	}
 
 	const handleDeleteMeal = async (mealId: string) => {
 		await screenStore.deleteMeal({ mealId });
@@ -69,7 +74,9 @@ export const Meal: React.FC<MealProps> = observer((props: MealProps) => {
 	return (
 		<Container style={shadowStyles.style}>
 			<MealHeader>
-				<MealNameText>{meal.name}</MealNameText>
+				<MealNameTextContainer>
+					<MealNameText>{meal.name}</MealNameText>
+				</MealNameTextContainer>
 				<ButtonsBox>
 					<ActionButton
 						onPress={() => {
@@ -105,9 +112,9 @@ export const Meal: React.FC<MealProps> = observer((props: MealProps) => {
 					return (
 						<Food key={food.id}>
 							<FoodNameText>{food.name}</FoodNameText>
-							<FoodDescription>{`${roundOneDecimal(
+							<FoodDescription>{`${formatNutrient(
 								food.quantity
-							)} ${food.quantity_unit}   -   ${roundOneDecimal(
+							)} ${food.quantity_unit}   -   ${formatNutrient(
 								food.energy_kcal
 							)} calorias`}</FoodDescription>
 						</Food>
@@ -128,8 +135,8 @@ export const Meal: React.FC<MealProps> = observer((props: MealProps) => {
 					mode="addMealFood"
 					handleAddFood={handleAddFood}
 					handleEditFood={handleEditFood}
-					isAddFoodModalVisible={isAddFoodModalVisible}
-					setIsAddFoodModalVisible={setIsAddFoodModalVisible}
+					isVisible={isAddFoodModalVisible}
+					closeModal={closeAddModal}
 				/>
 			</Portal>
 		</Container>
