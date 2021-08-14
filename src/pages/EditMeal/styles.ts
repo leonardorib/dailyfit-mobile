@@ -58,9 +58,9 @@ export const TitleContainer = styled.View`
 	align-items: center;
 	justify-content: space-evenly;
 	margin-top: 5px;
-	height: 70px;
 	background-color: #fff;
 	border-radius: 5px;
+	padding: 10px 20px 10px 20px;
 `;
 
 export const SelectedDateContainer = styled(RectButton)`
