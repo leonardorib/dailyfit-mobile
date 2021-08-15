@@ -1,7 +1,9 @@
 import React from "react";
 import { StatusBar } from "expo-status-bar";
+import Constants from 'expo-constants';
 import AppLoading from "expo-app-loading";
 import { NavigationContainer } from "@react-navigation/native";
+import FlashMessage from "react-native-flash-message";
 import Routes from "./src/routes";
 import { AuthProvider } from "./src/contexts/auth";
 
@@ -28,6 +30,11 @@ export default function App() {
         <Routes />
         <StatusBar style="dark" />
       </AuthProvider>
+	  <FlashMessage
+		position="top"
+		floating
+		statusBarHeight={Constants.statusBarHeight}
+	  />
     </NavigationContainer>
   );
 }
