@@ -8,11 +8,11 @@ export const Container = styled.View`
 	background-color: #fff;
 	margin-bottom: 5px;
 	border-radius: 8px;
-	padding: 10px 0 15px;
+	padding: 10px 20px 15px 20px;
 `;
 
 export const Food = styled.View`
-	height: 40px;
+	min-height: 40px;
 
 	margin-bottom: 10px;
 	justify-content: center;
@@ -20,6 +20,7 @@ export const Food = styled.View`
 
 export const MealHeader = styled.View`
 	flex-direction: row;
+	margin-bottom: 5px;
 `;
 
 
@@ -30,7 +31,6 @@ export const MealNameTextContainer = styled.View`
 
 export const MealNameText = styled.Text`
 	font-size: 18px;
-	margin-left: 20px;
 	margin-bottom: 10px;
 	font-family: Roboto_700Bold;
 	color: #000;
@@ -39,11 +39,11 @@ export const MealNameText = styled.Text`
 export const ButtonsBox = styled.View`
 	flex-direction: row;
 	margin-left: auto;
+	width: 100px;
 `;
 
 export const ActionButton = styled(RectButton)`
 	margin-left: auto;
-	margin-right: 20px;
 	background-color: #fff;
 	align-items: center;
 	justify-content: center;
@@ -54,14 +54,12 @@ export const ActionButton = styled(RectButton)`
 
 export const FoodNameText = styled.Text`
 	font-size: 16px;
-	margin-left: 20px;
 	font-family: Roboto_400Regular;
 	color: #444540;
 `;
 
 export const FoodDescription = styled.Text`
 	font-size: 14px;
-	margin-left: 20px;
 	font-family: Roboto_400Regular;
 	color: #444540;
 `;
@@ -69,7 +67,6 @@ export const FoodDescription = styled.Text`
 export const AddFoodButton = styled(RectButton)`
 	justify-content: center;
 	height: 30px;
-	margin-left: 10px;
 `;
 
 export const AddFoodText = styled.Text`

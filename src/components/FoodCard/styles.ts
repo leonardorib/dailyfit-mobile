@@ -8,7 +8,7 @@ export const Container = styled.View`
 	background-color: #fff;
 	margin-bottom: 5px;
 	border-radius: 8px;
-	padding: 10px 0 15px;
+	padding: 10px 20px 15px 20px;
 `;
 
 export const NutrientsOutterBox = styled.View`
@@ -30,6 +30,7 @@ export const NutrientsText = styled.Text`
 
 export const MealHeader = styled.View`
 	flex-direction: row;
+	margin-bottom: 5px;
 `;
 
 export const MealNameTextContainer = styled.View`
@@ -39,20 +40,19 @@ export const MealNameTextContainer = styled.View`
 
 export const MealNameText = styled.Text`
 	font-size: 18px;
-	margin-left: 20px;
 	margin-bottom: 10px;
 	font-family: Roboto_700Bold;
 	color: #000;
 `;
 
 export const ButtonsBox = styled.View`
-	margin-left: auto;
 	flex-direction: row;
+	margin-left: auto;
+	width: 100px;
 `;
 
 export const ActionButton = styled(RectButton)`
 	margin-left: auto;
-	margin-right: 20px;
 	background-color: #fff;
 	align-items: center;
 	justify-content: center;
@@ -63,7 +63,6 @@ export const ActionButton = styled(RectButton)`
 
 export const QuantityAndCaloriesRow = styled.Text`
 	font-size: 16px;
-	margin-left: 20px;
 	font-family: Roboto_400Regular;
 	color: #444540;
 `;
