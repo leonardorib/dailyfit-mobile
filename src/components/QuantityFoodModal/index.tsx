@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Keyboard, Platform } from "react-native";
 import { Modal } from "react-native-paper";
 import { FlatList } from "react-native-gesture-handler";
+import { showMessage } from "react-native-flash-message";
 import api from "../../services/api";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
@@ -32,7 +33,12 @@ interface FoodQuantityInput {
 }
 
 const foodQuantitySchema = yup.object().shape({
-	quantity: yup.number().moreThan(0).required(),
+	quantity: yup
+				.number()
+				.typeError("Quantidade deve ser um número")
+				.moreThan(0, "Quantidade deve ser positiva")
+				.required("Informe uma quantidade")
+				.max(1000000000000, "Valor muito alto!"),
 });
 
 interface IQuantityFoodModalProps {
@@ -68,6 +74,7 @@ export const QuantityFoodModal: React.FC<IQuantityFoodModalProps> = observer(
 
 		const { control, handleSubmit, errors } = useForm<FoodQuantityInput>({
 			resolver: yupResolver(foodQuantitySchema),
+			mode: "onChange",
 		});
 
 		const onSubmitAddFood = async (formData: FoodQuantityInput) => {
@@ -238,9 +245,10 @@ export const QuantityFoodModal: React.FC<IQuantityFoodModalProps> = observer(
 								<QuantityInputForm
 									value={value}
 									onChangeText={(value) => {
-										onChange(value);
+										const valueWithPointAsSeparator = value.replace(",", ".");
+										onChange(valueWithPointAsSeparator);
 
-										onChangeQuantityInput(Number(value));
+										onChangeQuantityInput(Number(valueWithPointAsSeparator));
 									}}
 									nutrients={nutrientsConsumed}
 								/>
@@ -249,6 +257,13 @@ export const QuantityFoodModal: React.FC<IQuantityFoodModalProps> = observer(
 					)}
 					<QuantityFormButtons
 						onConfirm={() => {
+							if (errors.quantity) {
+								showMessage({
+									position: "top",
+									message: errors.quantity.message || "Valor inválido",
+									type: "danger",
+								});
+							}
 							handleSubmit(
 								mode === "addMealFood"
 									? onSubmitAddFood

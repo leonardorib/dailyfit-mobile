@@ -31,7 +31,7 @@ export const QuantityInputForm: React.FC<IQuantityInputProps> = observer(
 					<QuantityInput
 						value={value}
 						onChangeText={onChangeText}
-						keyboardType="numbers-and-punctuation"
+						keyboardType="numeric"
 					/>
 
 					<UnitText>gramas</UnitText>
