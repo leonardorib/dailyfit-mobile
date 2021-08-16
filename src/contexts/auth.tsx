@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect } from "react";
 import { Alert } from "react-native";
 import api from "../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import jwtDecode from "jwt-decode";
 
 type User = {
   id: string;
@@ -81,6 +82,20 @@ export const AuthProvider: React.FC = ({ children }) => {
     await AsyncStorage.multiRemove(["@dailyFit:user", "@dailyFit:token"]);
   };
 
+  const checkTokenValidity = async (token: string) => {
+	try {
+		const decodedToken: any = jwtDecode(token);
+		const expirationDateSeconds = decodedToken.exp;
+		const nowSeconds = Date.now()/1000;
+		const isExpired = !(expirationDateSeconds && expirationDateSeconds > nowSeconds);
+		if (isExpired) {
+			throw new Error ("Token expired");
+		}
+	} catch (e) {
+		await handleSignOut();
+	}
+  };
+
   useEffect(() => {
     const loadStorageData = async () => {
       const storedUser = await AsyncStorage.getItem("@dailyFit:user");
@@ -91,9 +106,18 @@ export const AuthProvider: React.FC = ({ children }) => {
           user: JSON.parse(storedUser),
           token: storedToken,
         });
+
         api.axiosInstance.defaults.headers[
           "Authorization"
         ] = `Bearer ${storedToken}`;
+		api.axiosInstance.interceptors.response.use((response) => {
+			return response
+		  }, async function (error) {
+			if (error.response.status === (401 || 403)) {
+			  await checkTokenValidity(storedToken);
+			}
+			return Promise.reject(error);
+		  });
       }
     };
 

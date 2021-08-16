@@ -25,6 +25,7 @@
     "expo-constants": "~11.0.1",
     "expo-font": "~9.2.1",
     "expo-status-bar": "~1.0.4",
+    "jwt-decode": "^3.1.2",
     "mobx": "^6.1.8",
     "mobx-react": "^7.1.0",
     "react": "16.13.1",
