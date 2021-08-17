@@ -2,7 +2,7 @@ import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import { DailyDiet, Profile, EditMeal } from "../pages";
+import { DailyDiet, Profile, EditMeal, EditPassword } from "../pages";
 import { Drawer as CustomDrawer } from "../components";
 
 const PrivateRoutesDrawer = createDrawerNavigator();
@@ -38,6 +38,9 @@ const PrivateRoutes: React.FC = () => {
 			/>
 
 			<PrivateRoutesDrawer.Screen name="Profile" component={Profile} />
+
+			<PrivateRoutesDrawer.Screen name="EditPassword" component={EditPassword} />
+			
 		</PrivateRoutesDrawer.Navigator>
 	);
 };
