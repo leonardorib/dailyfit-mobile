@@ -30,8 +30,12 @@ interface IUpdateUserRequest {
 	lastName: string;
 	email: string;
 	password: string;
-	newPassword?: string;
-	newPasswordConfirmation?: string;
+}
+
+interface IUpdatePasswordRequest {
+	password: string;
+	newPassword: string;
+	newPasswordConfirmation: string;
 }
 
 interface IDeleteUserRequest {
@@ -57,6 +61,12 @@ const users = (axiosInstance: AxiosInstance) => {
 			updateUserData: IUpdateUserRequest
 		): Promise<AxiosResponse<IUser>> => {
 			return axiosInstance.put("users", { ...updateUserData });
+		},
+
+		updatePassword: (
+			updatePasswordData: IUpdatePasswordRequest
+		): Promise<AxiosResponse<IUser>> => {
+			return axiosInstance.put("users/password", { ...updatePasswordData });
 		},
 
 		delete: (
