@@ -11,6 +11,13 @@ type User = {
   email: string;
 };
 
+type ApiUser = {
+	id: string;
+	first_name: string;
+	last_name: string;
+	email: string;
+  };
+
 interface SignInData {
   email: string;
   password: string;
@@ -21,6 +28,7 @@ interface AuthContextData {
   token: string;
   handleSignIn(signInData: SignInData): void;
   handleSignOut(): void;
+  updateLocalUser(user: ApiUser): Promise<void>;
 }
 
 interface AuthProviderState {
@@ -35,6 +43,22 @@ export const AuthProvider: React.FC = ({ children }) => {
     user: undefined,
     token: "",
   });
+
+  const updateLocalUser = async (user: ApiUser) => {
+	const userData: User = {
+		id: user.id,
+		firstName: user.first_name,
+		lastName: user.last_name,
+		email: user.email,
+	}
+
+	await AsyncStorage.setItem(
+        "@dailyFit:user",
+        JSON.stringify(userData)
+      );
+
+	setAuthState({...authState, user: userData})
+  }
 
   const handleSignIn = async (signInData: SignInData) => {
     try {
@@ -131,6 +155,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         token: authState.token,
         handleSignIn,
         handleSignOut,
+		updateLocalUser,
       }}
     >
       {children}
