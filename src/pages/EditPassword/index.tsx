@@ -198,6 +198,21 @@ export const EditPassword: React.FC = () => {
 
 							<LinkButton
 								onPress={() => {
+									navigation.navigate("Profile");
+								}}
+							>
+								<Feather
+									name="user"
+									size={24}
+									color="#9CA9A7"
+								/>
+								<LinkButtonText>
+									Alterar seus dados
+								</LinkButtonText>
+							</LinkButton>
+
+							<LinkButton
+								onPress={() => {
 									navigation.navigate("DailyDiet");
 								}}
 							>
