@@ -35,12 +35,20 @@ const PrivateRoutes: React.FC = () => {
 			<PrivateRoutesDrawer.Screen
 				name="DailyDiet"
 				component={DietRoutes}
+				options={{ title: "Dieta" }}
 			/>
 
-			<PrivateRoutesDrawer.Screen name="Profile" component={Profile} />
+			<PrivateRoutesDrawer.Screen
+				name="Profile"
+				component={Profile}
+				options={{ title: "Seus dados" }}
+			/>
 
-			<PrivateRoutesDrawer.Screen name="EditPassword" component={EditPassword} />
-			
+			<PrivateRoutesDrawer.Screen
+				name="EditPassword"
+				component={EditPassword}
+				options={{ title: "Alterar senha" }}
+			/>
 		</PrivateRoutesDrawer.Navigator>
 	);
 };

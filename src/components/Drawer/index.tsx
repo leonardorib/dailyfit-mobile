@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
-import { Text, Button } from "react-native";
 import {
 	DrawerItemList,
 	DrawerContentComponentProps,
 	DrawerContentScrollView,
+	DrawerItem,
 } from "@react-navigation/drawer";
 
 import AuthContext from "../../contexts/auth";
@@ -20,10 +20,19 @@ export const Drawer: React.FC<DrawerContentComponentProps> = ({
 			<Container>
 				<Header>
 					<WelcomeText>Olá,</WelcomeText>
-					<UserNameText>{user?.firstName} ! ;)</UserNameText>
+					<UserNameText>{`${user?.firstName} ! ;)`}</UserNameText>
 				</Header>
-				<DrawerItemList {...props} />
-				<Button title="Sair" onPress={handleSignOut} />
+				<DrawerItemList
+					{...props}
+					activeTintColor="#329899"
+					labelStyle={{fontWeight: "700"}}
+				/>
+				<DrawerItem
+					label="Sair"
+					onPress={handleSignOut}
+					activeTintColor="#329899"
+					labelStyle={{fontWeight: "700"}}
+				/>
 			</Container>
 		</DrawerContentScrollView>
 	);
