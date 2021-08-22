@@ -147,6 +147,8 @@ export const DailyDiet: React.FC = observer(() => {
 									headerTextIOS="Selecione uma data"
 									confirmTextIOS="Confirmar"
 									cancelTextIOS="Cancelar"
+									textColor="black"
+									isDarkModeEnabled={false}
 									date={selectedDate}
 									mode="date"
 									onConfirm={(date) => {
