@@ -178,7 +178,10 @@ export const QuantityFoodModal: React.FC<IQuantityFoodModalProps> = observer(
 
 		useEffect(() => {
 			if (searchInput.length >= 1) {
-				setIsSearchTypingLoading(true)
+				setIsSearchTypingLoading(true);
+			};
+			if (searchInput.length === 0) {
+				setIsSearchTypingLoading(false);
 			};
 			const timeOut = setTimeout(() => {
 				if (searchInput.length > 1) {
