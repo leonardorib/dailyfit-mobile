@@ -1,5 +1,6 @@
-import { createContext } from "react";
-import { action, makeAutoObservable, makeObservable, observable, runInAction } from "mobx";
+import { makeAutoObservable, runInAction } from "mobx";
+import { addDays, endOfDay, startOfDay, subDays } from "date-fns";
+import { Alert } from "react-native";
 import api from "../../services/api";
 import {
 	IMeal,
@@ -10,8 +11,7 @@ import {
 	IAddFoodToMealRequest,
 	IDeleteMealFoodRequest,
 } from "../../services/api/MealFoods";
-import { addDays, endOfDay, startOfDay, subDays } from "date-fns";
-import { Alert } from "react-native";
+
 
 export interface INutrients {
 	energy_kcal: number;
@@ -23,6 +23,10 @@ export interface INutrients {
 
 export interface IDailyDiet extends INutrients {
 	meals: IMeal[];
+}
+
+function sleep(delayMs: number) {
+	return new Promise((resolve) => setTimeout(resolve, delayMs));
 }
 
 export default class Store {
@@ -45,6 +49,16 @@ export default class Store {
 
 	public isAddFoodModalVisible: boolean = false;
 
+	public isLoading = true;
+
+	private startLoading = () => {
+		this.isLoading = true;
+	}
+
+	private endLoading = () => {
+		this.isLoading = false;
+	}
+
 	public setSelectedDate = (date: Date) => {
 		this.selectedDate = date;
 	};
@@ -57,93 +71,70 @@ export default class Store {
 		this.selectedDate = addDays(this.selectedDate, 1);
 	};
 
-	// Meals
 	public getDailyDiet = async () => {
-		try {
-			const response = await api.meals.listByUserAndDate({
-				startDate: startOfDay(this.selectedDate),
-				endDate: endOfDay(this.selectedDate),
-			});
+		const response = await api.meals.listByUserAndDate({
+			startDate: startOfDay(this.selectedDate),
+			endDate: endOfDay(this.selectedDate),
+		});
 
-			runInAction(() => {
-				this.dailyDiet = response.data;
-			});
-		} catch (error) {
-			console.error(error.message);
-		}
+		runInAction(() => {
+			this.dailyDiet = response.data;
+		});
 	};
 
-	public createMeal = async (mealName: string) => {
+	public loadDiet = async () => {
+		this.startLoading();
 		try {
-			const response = await api.meals.add({
+			await this.getDailyDiet();
+		} catch (error) {
+			console.error(error);
+		} finally {
+			this.endLoading();
+		}
+	}
+
+	public createMeal = async (mealName: string) => {
+		this.startLoading();
+		try {
+			await api.meals.add({
 				name: mealName,
 				date: this.selectedDate,
 			});
 
-			runInAction(() => {
-				this.dailyDiet.meals.push({
-					...response.data,
-					energy_kcal: 0,
-					energy_kj: 0,
-					carbs: 0,
-					proteins: 0,
-					fats: 0,
-					mealFoods: [],
-				});
-			});
+			await this.getDailyDiet();
 		} catch (error) {
 			Alert.alert("Erro ao criar refeição", "Tente novamente");
 			console.error(error.message);
+		} finally {
+			this.endLoading();
 		}
 	};
 
 	public updateMealName = async ({ mealId, name }: IUpdateMealNameRequest) => {
+		this.startLoading();
 		try {
 			await api.meals.update({ mealId, name });
 
-			const currentMeals = this.dailyDiet.meals;
-
-			const updatedMeals = currentMeals.map((meal) => {
-				if (meal.id === mealId) {
-					return {
-						...meal,
-						name,
-					};
-				} else {
-					return meal;
-				}
-			});
-
-			runInAction(() => {
-				this.dailyDiet.meals = updatedMeals;
-			});
+			await this.getDailyDiet();
 		} catch (error) {
 			Alert.alert("Erro ao atualizar refeição", "Tente novamente");
 			console.error(error.message);
+		} finally {
+			this.endLoading();
 		}
 	};
 
 	public deleteMeal = async ({ mealId }: IDeleteMealRequest) => {
+		this.startLoading();
 		try {
-			const response = await api.meals.delete({ mealId });
+			await api.meals.delete({ mealId });
 
-			const { energy_kcal, energy_kj, carbs, proteins, fats } =
-				response.data;
-
-			runInAction(() => {
-				const updatedMeals = this.dailyDiet.meals.filter(
-					(meal) => meal.id !== mealId
-				);
-				this.dailyDiet.meals = updatedMeals;
-				this.dailyDiet.energy_kcal -= energy_kcal;
-				this.dailyDiet.energy_kj -= energy_kj;
-				this.dailyDiet.carbs -= carbs;
-				this.dailyDiet.proteins -= proteins;
-				this.dailyDiet.fats -= fats;
-			});
+			await this.getDailyDiet();
 		} catch (error) {
 			Alert.alert("Erro ao deletar refeição", "Tente novamente");
 			console.error(error.message);
+		} finally {
+			this.endLoading();
 		}
 	};
 
@@ -154,6 +145,7 @@ export default class Store {
 		quantity,
 		quantity_unit,
 	}: IAddFoodToMealRequest) => {
+		this.startLoading();
 		try {
 			const response = await api.mealFoods.addFoodToMeal({
 				mealId,
@@ -161,69 +153,27 @@ export default class Store {
 				quantity,
 				quantity_unit,
 			});
-			const food = response.data;
-			const { energy_kcal, energy_kj, carbs, proteins, fats } = food;
 
-			runInAction(() => {
-				this.dailyDiet.energy_kcal += energy_kcal;
-				this.dailyDiet.energy_kj += energy_kj;
-				this.dailyDiet.carbs += carbs;
-				this.dailyDiet.proteins += proteins;
-				this.dailyDiet.fats += fats;
-
-				const updatedMeals = this.dailyDiet.meals.map((meal) => {
-					if (meal.id === mealId) {
-						meal.mealFoods.push(food);
-						return {
-							...meal,
-							energy_kcal: meal.energy_kcal + energy_kcal,
-							energy_kj: meal.energy_kj + energy_kj,
-							carbs: meal.carbs + carbs,
-							proteins: meal.proteins + proteins,
-							fats: meal.fats + fats,
-						};
-					} else {
-						return meal;
-					}
-				});
-				this.dailyDiet.meals = updatedMeals;
-			});
+			await this.getDailyDiet();
 
 			return response.data;
 		} catch (error) {
 			console.error(error.message);
+		} finally {
+			this.endLoading();
 		}
 	};
 
 	public deleteMealFood = async ({ mealFoodId }: IDeleteMealFoodRequest) => {
+		this.startLoading();
 		try {
-			const response = await api.mealFoods.delete({ mealFoodId });
+			await api.mealFoods.delete({ mealFoodId });
 
-			const { energy_kcal, energy_kj, carbs, proteins, fats, meal_id } =
-				response.data;
-
-			runInAction(() => {
-				this.dailyDiet.energy_kcal -= energy_kcal;
-				this.dailyDiet.energy_kj -= energy_kj;
-				this.dailyDiet.carbs -= carbs;
-				this.dailyDiet.proteins -= proteins;
-				this.dailyDiet.fats -= fats;
-
-				this.dailyDiet.meals.map((meal) => {
-					if (meal.id === meal_id) {
-						return {
-							...meal,
-							energy_kcal: meal.energy_kcal - energy_kcal,
-							energy_kj: meal.energy_kj - energy_kj,
-							carbs: meal.carbs - carbs,
-							proteins: meal.proteins - proteins,
-							fats: meal.fats - fats,
-						};
-					}
-				});
-			});
+			await this.getDailyDiet();
 		} catch (error) {
 			console.error(error.message);
+		} finally {
+			this.endLoading();
 		}
 	};
 }
