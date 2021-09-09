@@ -41,7 +41,7 @@ export const SelectFoodText = styled.Text`
 `;
 
 export const FoodContainer = styled(RectButton)<FoodContainerProps>`
-	height: 40px;
+	padding: 8px 0 8px 0;
 	margin-bottom: 8px;
 	justify-content: center;
 	background-color: #fff;
