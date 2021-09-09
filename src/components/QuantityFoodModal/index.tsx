@@ -204,6 +204,7 @@ export const QuantityFoodModal: React.FC<IQuantityFoodModalProps> = observer(
 								onScrollBeginDrag={Keyboard.dismiss}
 								style={{
 									marginBottom: 20,
+									width: "100%",
 								}}
 								contentContainerStyle={{
 									alignItems: "center",
