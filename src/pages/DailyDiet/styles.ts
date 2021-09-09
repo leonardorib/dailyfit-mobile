@@ -1,7 +1,11 @@
 import { StyleSheet } from "react-native";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { RectButton } from "react-native-gesture-handler";
-import styled from "styled-components/native";
+import styled, { css } from "styled-components/native";
+
+interface IDietContainerProps {
+	visible: boolean;
+}
 
 export const SafeAreaView = styled.SafeAreaView`
 	flex: 1;
@@ -27,41 +31,16 @@ export const Container = styled.View`
 	align-items: center;
 `;
 
-export const ArrowRightButton = styled(RectButton)`
-	width: auto;
+export const DietContainer = styled.View<IDietContainerProps>`
 	flex: 1;
+	width: 100%;
 	align-items: center;
-`;
 
-export const ArrowLeftButton = styled(RectButton)`
-	width: auto;
-	flex: 1;
-	align-items: center;
-`;
-
-export const DateText = styled.Text`
-	margin-right: 8px;
-	font-size: 18px;
-	font-family: "Roboto_400Regular";
-	color: #444540;
-`;
-
-export const DateSelectionRow = styled.View`
-	width: 98%;
-	flex-direction: row;
-	align-items: center;
-	justify-content: space-evenly;
-	margin-top: 5px;
-	height: 40px;
-	background-color: #fff;
-	border-radius: 5px;
-`;
-
-export const SelectedDateContainer = styled(RectButton)`
-	flex-direction: row;
-	align-items: center;
-	width: 150px;
-	justify-content: center;
+	${(props) =>
+		!props.visible &&
+		css`
+		display: none;
+    `}
 `;
 
 export const AddMealButton = styled(RectButton)`
