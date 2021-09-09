@@ -40,13 +40,14 @@ export const CaloriesText = styled.Text``;
 export const NutrientsRow = styled.View`
 	flex-direction: row;
 	justify-content: center;
-	margin-top: 10px;
+	flex-wrap: wrap;
 `;
 
 export const IndividualNutrientBox = styled.View`
 	align-items: center;
 	margin-left: 10px;
 	margin-right: 10px;
+	margin-top: 10px;
 `;
 
 export const NutrientText = styled.Text`
