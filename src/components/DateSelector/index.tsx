@@ -29,7 +29,7 @@ export const DateSelector: React.FC<IProps> = observer((props) => {
 	return (
 		<>
 			<Container style={shadowStyles.style}>
-				<Content isEnabled={isEnabled} >
+				<Content>
 					<ArrowLeftButton
 						onPress={subtractDay}
 						enabled={isEnabled}

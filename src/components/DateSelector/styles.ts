@@ -1,10 +1,6 @@
 import { StyleSheet } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
-import styled, { css } from "styled-components/native";
-
-interface ContentContainerProps {
-	isEnabled: boolean;
-}
+import styled from "styled-components/native";
 
 export const Container = styled.View`
 	width: 98%;
@@ -17,17 +13,11 @@ export const Container = styled.View`
 	border-radius: 5px;
 `;
 
-export const Content = styled.View<ContentContainerProps>`
+export const Content = styled.View`
 	background-color: transparent;
 	flex: 1;
 	flex-direction: row;
-	
-	${(props) =>
-		!props.isEnabled &&
-		css`
-		opacity: 0.6;
-    `}
-`
+`;
 
 export const ArrowRightButton = styled(RectButton)`
 	width: auto;
