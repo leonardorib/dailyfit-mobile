@@ -3,11 +3,25 @@ import { Keyboard, Platform } from "react-native";
 import { Modal } from "react-native-paper";
 import { FlatList } from "react-native-gesture-handler";
 import { showMessage } from "react-native-flash-message";
-import api from "../../services/api";
+import { observer } from "mobx-react";
 import { useForm, Controller } from "react-hook-form";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
+
+import api from "../../services/api";
 import { IMeal } from "../../services/api/Meals";
+import { IFood } from "../../services/api/Foods";
+import { INutrients } from "../../services/api/Nutrients";
+import {
+	IAddFoodToMealRequest,
+	IMealFood,
+	IUpdateMealFoodRequest,
+} from "../../services/api/MealFoods";
+import { showError } from "../../services/flashMessage";
+
+import { QuantityInputForm } from "../QuantityInputForm";
+import { QuantityFormButtons } from "../QuantityFormButtons";
+import { Loading } from "../Loading";
 
 import {
 	Container,
@@ -17,16 +31,6 @@ import {
 	FoodName,
 	shadowStyles,
 } from "./styles";
-import { observer } from "mobx-react";
-import { QuantityInputForm } from "../QuantityInputForm";
-import { QuantityFormButtons } from "../QuantityFormButtons";
-import { INutrients } from "../../services/api/Nutrients";
-import { IFood } from "../../services/api/Foods";
-import {
-	IAddFoodToMealRequest,
-	IMealFood,
-	IUpdateMealFoodRequest,
-} from "../../services/api/MealFoods";
 
 interface FoodQuantityInput {
 	quantity: number;
@@ -63,8 +67,17 @@ const initialNutrients: INutrients = {
 
 export const QuantityFoodModal: React.FC<IQuantityFoodModalProps> = observer(
 	(props: IQuantityFoodModalProps) => {
-		const { handleAddFood, handleEditFood, mode, initialMealFood, onSubmit, closeModal } = props;
+		const {
+			handleAddFood,
+			handleEditFood,
+			mode,
+			initialMealFood,
+			onSubmit,
+			closeModal,
+		} = props;
 		const [searchInput, setSearchInput] = useState("");
+		const [isSearchRequestLoading, setIsSearchRequestLoading] = useState(false);
+		const [isSearchTypingLoading, setIsSearchTypingLoading] = useState(false);
 		const [foods, setFoods] = useState<IFood[]>([]);
 		const [selectedFood, setSelectedFood] = useState<IFood | undefined>(
 			undefined
@@ -142,9 +155,16 @@ export const QuantityFoodModal: React.FC<IQuantityFoodModalProps> = observer(
 		};
 
 		const apiRequestFoods = async (foodName: string) => {
-			const response = await api.foods.listByName({ foodName });
-
-			setFoods(response.data);
+			setIsSearchRequestLoading(true);
+			try {
+				const response = await api.foods.listByName({ foodName });
+				setFoods(response.data);
+			} catch (e) {
+				console.error(e.messages || e);
+				showError("Erro carregando alimentos");
+			} finally {
+				setIsSearchRequestLoading(false);
+			}
 		};
 
 		useEffect(() => {
@@ -157,8 +177,12 @@ export const QuantityFoodModal: React.FC<IQuantityFoodModalProps> = observer(
 		}, [initialMealFood]);
 
 		useEffect(() => {
+			if (searchInput.length >= 1) {
+				setIsSearchTypingLoading(true)
+			};
 			const timeOut = setTimeout(() => {
 				if (searchInput.length > 1) {
+					setIsSearchTypingLoading(false);
 					apiRequestFoods(searchInput);
 					Keyboard.dismiss();
 				}
@@ -192,14 +216,17 @@ export const QuantityFoodModal: React.FC<IQuantityFoodModalProps> = observer(
 							autoFocus={true}
 							onBlur={Keyboard.dismiss}
 							clearIcon="delete"
+							icon={isSearchTypingLoading ? () => <Loading /> : undefined}
 						/>
 					)}
 
-					{foods.length > 0 && mode === "addMealFood" && (
+					{mode === "addMealFood" && (
 						<>
-							<SelectFoodText>
-								Toque para selecionar o alimento
-							</SelectFoodText>
+							{foods.length > 0 &&
+								<SelectFoodText>
+									Toque para selecionar o alimento
+								</SelectFoodText>
+							}
 							<FlatList
 								onScrollBeginDrag={Keyboard.dismiss}
 								style={{
@@ -233,6 +260,9 @@ export const QuantityFoodModal: React.FC<IQuantityFoodModalProps> = observer(
 										</FoodContainer>
 									);
 								}}
+								ListEmptyComponent={
+									isSearchRequestLoading ? <Loading /> : undefined
+								}
 							/>
 						</>
 					)}
