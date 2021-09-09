@@ -6,3 +6,4 @@ export { Loading } from "./Loading";
 export { TotalConsumptionBox } from "./TotalConsumptionBox";
 export { QuantityInputForm } from "./QuantityInputForm";
 export { QuantityFormButtons } from "./QuantityFormButtons";
+export { DateSelector } from "./DateSelector";

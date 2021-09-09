@@ -8,11 +8,9 @@ import {
 import { observer, useLocalObservable } from "mobx-react";
 import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
-import { format } from "date-fns";
-import DateTimePickerModal from "react-native-modal-datetime-picker";
-import { AntDesign, Feather } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 import { useForm, Controller } from "react-hook-form";
-import { Header, TotalConsumptionBox } from "../../components";
+import { Header, Loading, TotalConsumptionBox, DateSelector } from "../../components";
 import { Meal } from "./components";
 import Store from "./store";
 
@@ -21,11 +19,7 @@ import {
 	KeyboardAvoidingView,
 	ScrollView,
 	Container,
-	DateSelectionRow,
-	SelectedDateContainer,
-	DateText,
-	ArrowLeftButton,
-	ArrowRightButton,
+	DietContainer,
 	AddMealButton,
 	AddMealButtonText,
 	AddMealModalInnerView,
@@ -60,10 +54,10 @@ export const DailyDiet: React.FC = observer(() => {
 		setSelectedDate,
 		addDay,
 		subtractDay,
-		getDailyDiet,
+		loadDiet,
+		isLoading,
 		dailyDiet,
 	} = store;
-	const [showDatePicker, setShowDatePicker] = useState(false);
 	const [isAddMealModalVisible, setIsAddMealModalVisible] = useState(false);
 
 	const {
@@ -81,7 +75,7 @@ export const DailyDiet: React.FC = observer(() => {
 
 	useFocusEffect(
 		useCallback(() => {
-			getDailyDiet();
+			loadDiet();
 		}, [store.selectedDate])
 	);
 
@@ -94,92 +88,36 @@ export const DailyDiet: React.FC = observer(() => {
 					<Header />
 					<ScrollView>
 						<Container>
-							{/* Selecting date */}
-							<DateSelectionRow style={shadowStyles.style}>
-								<ArrowLeftButton
-									onPress={() => {
-										subtractDay();
-									}}
-								>
-									<Feather
-										name="chevron-left"
-										size={24}
-										color="#444540"
-									/>
-								</ArrowLeftButton>
-								<SelectedDateContainer
-									onPress={() => {
-										setShowDatePicker(true);
-									}}
-								>
-									<DateText>
-										{format(selectedDate, "dd/MM/yyyy") ===
-										format(new Date(), "dd/MM/yyyy")
-											? "Hoje"
-											: format(
-													selectedDate,
-													"dd/MM/yyyy"
-											  )}
-									</DateText>
-									<AntDesign
-										name="caretdown"
-										size={10}
-										color="#444540"
-									/>
-								</SelectedDateContainer>
-								<ArrowRightButton
-									onPress={() => {
-										addDay();
-									}}
-								>
-									<Feather
-										name="chevron-right"
-										size={24}
-										color="#444540"
-									/>
-								</ArrowRightButton>
-							</DateSelectionRow>
-
-							{/* Date Picker Modal */}
-							{showDatePicker && (
-								<DateTimePickerModal
-									isVisible={showDatePicker}
-									headerTextIOS="Selecione uma data"
-									confirmTextIOS="Confirmar"
-									cancelTextIOS="Cancelar"
-									textColor="black"
-									isDarkModeEnabled={false}
-									date={selectedDate}
-									mode="date"
-									onConfirm={(date) => {
-										setShowDatePicker(!showDatePicker);
-										setSelectedDate(date);
-									}}
-									onCancel={() =>
-										setShowDatePicker(!showDatePicker)
-									}
-									locale="pt-BR"
-								/>
-							)}
-
-							<TotalConsumptionBox
-								energy_kcal={dailyDiet.energy_kcal}
-								carbs={dailyDiet.carbs}
-								proteins={dailyDiet.proteins}
-								fats={dailyDiet.fats}
+							<DateSelector
+								date={selectedDate}
+								addDay={addDay}
+								subtractDay={subtractDay}
+								isEnabled={!isLoading}
+								onConfirmDate={(date: Date) => {
+									setSelectedDate(date);
+								}}
 							/>
+							{isLoading && (
+								<Loading/> )}
+								<DietContainer visible={!isLoading} >
+									<TotalConsumptionBox
+										energy_kcal={dailyDiet.energy_kcal}
+										carbs={dailyDiet.carbs}
+										proteins={dailyDiet.proteins}
+										fats={dailyDiet.fats}
+									/>
 
-							{/* Rendering meals list */}
-							{dailyDiet.meals &&
-								dailyDiet.meals.map((meal) => {
-									return (
-										<Meal
-											key={meal.id}
-											meal={meal}
-											screenStore={store}
-										/>
-									);
-								})}
+									{dailyDiet.meals &&
+										dailyDiet.meals.map((meal) => {
+											return (
+												<Meal
+													key={meal.id}
+													meal={meal}
+													screenStore={store}
+												/>
+											);
+										})}
+								</DietContainer>
 						</Container>
 					</ScrollView>
 
@@ -188,6 +126,7 @@ export const DailyDiet: React.FC = observer(() => {
 						onPress={() => {
 							setIsAddMealModalVisible(true);
 						}}
+						enabled={!isLoading}
 					>
 						<AntDesign
 							name="pluscircleo"
