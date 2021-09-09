@@ -3,6 +3,8 @@ import { Alert } from "react-native";
 import api from "../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwtDecode from "jwt-decode";
+import { AxiosResponse } from "axios";
+import { showError } from "../services/flashMessage";
 
 type User = {
   id: string;
@@ -134,14 +136,27 @@ export const AuthProvider: React.FC = ({ children }) => {
         api.axiosInstance.defaults.headers[
           "Authorization"
         ] = `Bearer ${storedToken}`;
-		api.axiosInstance.interceptors.response.use((response) => {
-			return response
-		  }, async function (error) {
-			if (error.response.status === (401 || 403)) {
-			  await checkTokenValidity(storedToken);
+
+		const onResponseFulfilled = (response: AxiosResponse<any>) => {
+			return response;
+		};
+
+		const onResponseRejected = async (error: any) => {
+			if (error.message && error.message === "Network Error") {
+				showError("Erro de conexão! Tente mais tarde");
+				handleSignOut();
+				
+			} else if (error.response.status === (401 || 403)) {
+				await checkTokenValidity(storedToken);
 			}
+
 			return Promise.reject(error);
-		  });
+		};
+
+		api.axiosInstance.interceptors.response.use(
+			onResponseFulfilled,
+			onResponseRejected
+		);
       }
     };
 
