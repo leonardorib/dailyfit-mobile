@@ -18,3 +18,6 @@ web-build/
 *.apk
 *.ipa
 *.cer
+
+# VS Code Local Configs
+.vscode
