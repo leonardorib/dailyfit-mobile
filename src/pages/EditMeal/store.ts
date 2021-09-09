@@ -15,7 +15,6 @@ export interface INutrients {
 export interface IDailyDiet extends INutrients {
 	meals: IMeal[];
 }
-
 export default class Store {
 	public mealId: string;
 
@@ -23,35 +22,54 @@ export default class Store {
 
 	public selectedMealFood: IMealFood | undefined = undefined;
 
+	public isLoading = true;
+
+	private startLoading = () => {
+		this.isLoading = true;
+	}
+
+	private endLoading = () => {
+		this.isLoading = false;
+	}
+
 	constructor(mealId: string) {
 		makeAutoObservable(this);
 		this.mealId = mealId;
-		this.loadMeal();
 	}
 
 	public setMealFood = (mealFood: IMealFood | undefined) => {
 		this.selectedMealFood = mealFood;
 	}
 
-	public loadMeal = async () => {
-		try {
-			const response = await api.meals.getById(this.mealId);
+	private getMeal = async () => {
+		const response = await api.meals.getById(this.mealId);
 
-			runInAction(() => {
-				this.meal = response.data;
-			});
+		runInAction(() => {
+			this.meal = response.data;
+		});
+	}
+
+	public loadMeal = async () => {
+		this.startLoading();
+		try {
+			await this.getMeal();
 		} catch (e) {
 			Alert.alert("Erro", "Erro ao carregar refeição");
+		} finally {
+			this.endLoading();
 		}
 	};
 
 	public deleteMealFood = async (mealFoodId: string) => {
+		this.startLoading();
 		try {
 			await api.mealFoods.delete({ mealFoodId });
+
+			await this.getMeal();
 		} catch (e) {
 			Alert.alert("Erro", "Erro ao deletar refeição");
 		} finally {
-			await this.loadMeal();
+			this.endLoading();
 		}
 	}
 }

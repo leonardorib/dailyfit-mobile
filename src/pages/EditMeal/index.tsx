@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import React, { useCallback, useState, useEffect } from "react";
 import { Platform, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
@@ -42,11 +42,11 @@ interface IProps {
 }
 
 export const EditMeal: React.FC<IProps> = observer(({ route }) => {
-	const localStore = useLocalObservable(() => new Store(route.params.mealId));
+	const store = useLocalObservable(() => new Store(route.params.mealId));
 	const [isAddFoodModalVisible, setIsAddFoodModalVisible] = useState(false);
 	const [isEditMealFoodModalVisible, setIsEditMealFoodModalVisible] =
 		useState(false);
-	const { selectedMealFood, setMealFood } = localStore;
+	const { selectedMealFood, setMealFood } = store;
 	const handleAddFood = useCallback(
 		async ({
 			mealId,
@@ -75,6 +75,10 @@ export const EditMeal: React.FC<IProps> = observer(({ route }) => {
 		[]
 	);
 
+	useEffect(() => {
+		store.loadMeal();
+	}, []);
+
 	const closeEditModal = () => {
 		setIsEditMealFoodModalVisible(false);
 		setMealFood(undefined);
@@ -95,30 +99,30 @@ export const EditMeal: React.FC<IProps> = observer(({ route }) => {
 					{}
 					<Header />
 					<ScrollView>
-						{!localStore.meal ? (
+						{!store.meal || store.isLoading ? (
 							<Loading />
 						) : (
 							<Container>
 								<TitleContainer style={shadowStyles.style}>
 									<TitleText>Refeição</TitleText>
 									<MealNameText>
-										{localStore.meal.name}
+										{store.meal.name}
 									</MealNameText>
 								</TitleContainer>
 
 								<TotalConsumptionBox
-									energy_kcal={localStore.meal.energy_kcal}
-									carbs={localStore.meal.carbs}
-									proteins={localStore.meal.proteins}
-									fats={localStore.meal.fats}
+									energy_kcal={store.meal.energy_kcal}
+									carbs={store.meal.carbs}
+									proteins={store.meal.proteins}
+									fats={store.meal.fats}
 								/>
 
-								{localStore.meal.mealFoods.map((mealFood) => (
+								{store.meal.mealFoods.map((mealFood) => (
 									<FoodCard
 										key={mealFood.id}
 										mealFood={mealFood}
 										deleteMealFood={() => {
-											localStore.deleteMealFood(
+											store.deleteMealFood(
 												mealFood.id
 											);
 										}}
@@ -131,26 +135,26 @@ export const EditMeal: React.FC<IProps> = observer(({ route }) => {
 								{/* Edit Meal Food Modal */}
 								<Portal>
 									<QuantityFoodModal
-										meal={localStore.meal}
+										meal={store.meal}
 										isVisible={isEditMealFoodModalVisible}
 										closeModal={closeEditModal}
 										mode="editMealFood"
 										initialMealFood={selectedMealFood}
 										handleAddFood={handleAddFood}
 										handleEditFood={handleEditFood}
-										onSubmit={localStore.loadMeal}
+										onSubmit={store.loadMeal}
 									/>
 								</Portal>
 								{/*Add Meal Food Modal */}
 								<Portal>
 									<QuantityFoodModal
-										meal={localStore.meal}
+										meal={store.meal}
 										isVisible={isAddFoodModalVisible}
 										closeModal={closeAddModal}
 										mode="addMealFood"
 										handleAddFood={handleAddFood}
 										handleEditFood={handleEditFood}
-										onSubmit={localStore.loadMeal}
+										onSubmit={store.loadMeal}
 									/>
 								</Portal>
 							</Container>
