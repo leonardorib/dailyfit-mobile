@@ -300,7 +300,6 @@ export const QuantityFoodModal: React.FC<IQuantityFoodModalProps> = observer(
 									? onSubmitAddFood
 									: onSubmitEditMealFood
 							)();
-							setNutrientsConsumed(initialNutrients);
 						}}
 						onCancel={() => {
 							closeModal();
