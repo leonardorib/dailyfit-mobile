@@ -43,6 +43,17 @@ interface IDeleteUserRequest {
 	password: string;
 }
 
+interface IForgotPasswordRequest {
+	email: string;
+}
+
+interface IResetPasswordRequest {
+	email: string;
+	token: string;
+	newPassword: string;
+	newPasswordConfirmation: string;
+}
+
 const users = (axiosInstance: AxiosInstance) => {
 	return {
 		authenticate: (
@@ -76,6 +87,18 @@ const users = (axiosInstance: AxiosInstance) => {
 			return axiosInstance.delete(`users/${userId}`, {
 				data: { password },
 			});
+		},
+
+		forgotPassword: (
+			forgotPasswordData: IForgotPasswordRequest
+		) => {
+			return axiosInstance.post(`users/forgotpassword`, forgotPasswordData);
+		},
+
+		resetPassword: (
+			resetPasswordData: IResetPasswordRequest
+		): Promise<AxiosResponse<IUser>> => {
+			return axiosInstance.post(`users/resetpassword`, resetPasswordData);
 		},
 	};
 };
