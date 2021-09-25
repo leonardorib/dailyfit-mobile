@@ -21,11 +21,12 @@ import {
 	LogoText,
 	Button,
 	ButtonText,
-	SignUpContainer,
-	SignUpText,
+	LinkButton,
+	LinkText,
 	KeyboardAvoidingView,
 	ScrollView,
 } from "./styles";
+import { showError } from "../../services/flashMessage";
 
 type FormData = {
 	firstName: string;
@@ -75,7 +76,7 @@ export const SignUp: React.FC = () => {
 				]
 			);
 		} catch (error) {
-			Alert.alert("Erro no cadastro", "Tente novamente");
+			showError("Erro no cadastro. Tente novamente");
 			console.error(error);
 		}
 	};
@@ -255,7 +256,7 @@ export const SignUp: React.FC = () => {
 									<ButtonText>Cadastrar</ButtonText>
 								</Button>
 
-								<SignUpContainer
+								<LinkButton
 									onPress={() => {
 										navigation.navigate("Login");
 									}}
@@ -265,8 +266,8 @@ export const SignUp: React.FC = () => {
 										size={24}
 										color="#9CA9A7"
 									/>
-									<SignUpText>Voltar para o login</SignUpText>
-								</SignUpContainer>
+									<LinkText>Voltar para o login</LinkText>
+								</LinkButton>
 							</ContentContainer>
 						</TouchableWithoutFeedback>
 					</ScrollView>

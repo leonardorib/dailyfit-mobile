@@ -64,14 +64,14 @@ export const ButtonText = styled.Text`
 	font-size: 20px;
 `;
 
-export const SignUpContainer = styled.TouchableOpacity`
+export const LinkButton = styled.TouchableOpacity`
 	flex-direction: row;
 	align-items: center;
 	justify-content: center;
 	margin-top: 40px;
 `;
 
-export const SignUpText = styled.Text`
+export const LinkText = styled.Text`
 	font-family: "Roboto_400Regular";
 	color: #9ca9a7;
 	font-size: 18px;

@@ -20,8 +20,9 @@ import {
 	LogoText,
 	Button,
 	ButtonText,
-	SignUpContainer,
-	SignUpText,
+	LinksContainer,
+	LinkButton,
+	LinkText,
 	KeyboardAvoidingView,
 	ScrollView,
 	TouchableWithoutFeedback,
@@ -146,19 +147,33 @@ export const Login: React.FC = () => {
 								>
 									<ButtonText>Entrar</ButtonText>
 								</Button>
+								<LinksContainer>
+									<LinkButton
+										onPress={() => {
+											navigation.navigate("SignUp");
+										}}
+									>
+										<Feather
+											name="log-in"
+											size={24}
+											color="#9CA9A7"
+										/>
+										<LinkText>Criar conta</LinkText>
+									</LinkButton>
 
-								<SignUpContainer
-									onPress={() => {
-										navigation.navigate("SignUp");
-									}}
-								>
-									<Feather
-										name="log-in"
-										size={24}
-										color="#9CA9A7"
-									/>
-									<SignUpText>Criar conta</SignUpText>
-								</SignUpContainer>
+									<LinkButton
+										onPress={() => {
+											navigation.navigate("ForgotPassword");
+										}}
+									>
+										<Feather
+											name="lock"
+											size={24}
+											color="#9CA9A7"
+										/>
+										<LinkText>Esqueci minha senha</LinkText>
+									</LinkButton>
+								</LinksContainer>
 							</ContentContainer>
 						</TouchableWithoutFeedback>
 					</ScrollView>
