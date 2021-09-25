@@ -1,6 +1,5 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import { addDays, endOfDay, startOfDay, subDays } from "date-fns";
-import { Alert } from "react-native";
 import api from "../../services/api";
 import {
 	IMeal,
@@ -11,6 +10,7 @@ import {
 	IAddFoodToMealRequest,
 	IDeleteMealFoodRequest,
 } from "../../services/api/MealFoods";
+import { showError } from "../../services/flashMessage";
 
 
 export interface INutrients {
@@ -23,10 +23,6 @@ export interface INutrients {
 
 export interface IDailyDiet extends INutrients {
 	meals: IMeal[];
-}
-
-function sleep(delayMs: number) {
-	return new Promise((resolve) => setTimeout(resolve, delayMs));
 }
 
 export default class Store {
@@ -103,7 +99,7 @@ export default class Store {
 
 			await this.getDailyDiet();
 		} catch (error) {
-			Alert.alert("Erro ao criar refeição", "Tente novamente");
+			showError("Erro ao criar refeição. Tente novamente");
 			console.error(error.message);
 		} finally {
 			this.endLoading();
@@ -117,7 +113,7 @@ export default class Store {
 
 			await this.getDailyDiet();
 		} catch (error) {
-			Alert.alert("Erro ao atualizar refeição", "Tente novamente");
+			showError("Erro ao atualizar refeição. Tente novamente");
 			console.error(error.message);
 		} finally {
 			this.endLoading();
@@ -131,7 +127,7 @@ export default class Store {
 
 			await this.getDailyDiet();
 		} catch (error) {
-			Alert.alert("Erro ao deletar refeição", "Tente novamente");
+			showError("Erro ao deletar refeição. Tente novamente");
 			console.error(error.message);
 		} finally {
 			this.endLoading();

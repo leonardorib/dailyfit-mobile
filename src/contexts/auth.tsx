@@ -1,5 +1,4 @@
 import React, { createContext, useState, useEffect } from "react";
-import { Alert } from "react-native";
 import api from "../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import jwtDecode from "jwt-decode";
@@ -94,7 +93,7 @@ export const AuthProvider: React.FC = ({ children }) => {
         token,
       });
     } catch (error) {
-      Alert.alert("Erro no login", "Tente novamente");
+	  showError("Erro no login. Cheque as credenciais e tente novamente")
       console.log(error);
     }
   };

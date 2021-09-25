@@ -1,8 +1,8 @@
 import { makeAutoObservable, runInAction } from "mobx";
 import api from "../../services/api";
 import { IMeal } from "../../services/api/Meals";
-import { Alert } from "react-native";
 import { IMealFood } from "../../services/api/MealFoods";
+import { showError } from "../../services/flashMessage";
 
 export interface INutrients {
 	energy_kcal: number;
@@ -54,7 +54,7 @@ export default class Store {
 		try {
 			await this.getMeal();
 		} catch (e) {
-			Alert.alert("Erro", "Erro ao carregar refeição");
+			showError("Erro ao carregar refeição");
 		} finally {
 			this.endLoading();
 		}
@@ -67,7 +67,7 @@ export default class Store {
 
 			await this.getMeal();
 		} catch (e) {
-			Alert.alert("Erro", "Erro ao deletar refeição");
+			showError("Erro ao deletar refeição");
 		} finally {
 			this.endLoading();
 		}
