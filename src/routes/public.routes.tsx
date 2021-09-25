@@ -1,5 +1,5 @@
 import React from "react";
-import { Login, SignUp } from "../pages";
+import { Login, SignUp, ForgotPassword, ResetPassword } from "../pages";
 
 import { createStackNavigator } from "@react-navigation/stack";
 
@@ -15,6 +15,8 @@ const PublicRoutes: React.FC = () => {
 		>
 			<PublicStack.Screen name="Login" component={Login} />
 			<PublicStack.Screen name="SignUp" component={SignUp} />
+			<PublicStack.Screen name="ForgotPassword" component={ForgotPassword} />
+			<PublicStack.Screen name="ResetPassword" component={ResetPassword} />
 		</PublicStack.Navigator>
 	);
 };
