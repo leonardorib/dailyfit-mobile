@@ -8,7 +8,7 @@ import AuthContext from "../../contexts/auth";
 import api from "../../services/api";
 import { showError, showSuccess } from "../../services/flashMessage";
 import { Header } from "../../components";
-import inputTheme from "../utils/inputTheme";
+import inputTheme from "../../themes/inputTheme";
 import { updatePasswordSchema } from "./validation";
 import {
 	SafeAreaView,

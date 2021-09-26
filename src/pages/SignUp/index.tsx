@@ -8,7 +8,7 @@ import * as yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import api from "../../services/api";
 import logoImg from "../../assets/logo.png";
-import inputTheme from "../utils/inputTheme";
+import inputTheme from "../../themes/inputTheme";
 
 import {
 	SafeAreaView,
