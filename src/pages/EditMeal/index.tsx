@@ -2,12 +2,7 @@ import React, { useCallback, useState, useEffect } from "react";
 import { Platform, Text, View } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
-import {
-	DefaultTheme,
-	Provider as PaperProvider,
-	Modal,
-	Portal,
-} from "react-native-paper";
+import { Modal, Portal } from "react-native-paper";
 import { observer, useLocalObservable } from "mobx-react";
 import {
 	Header,
@@ -82,125 +77,119 @@ export const EditMeal: React.FC<IProps> = observer(({ route }) => {
 	const closeEditModal = () => {
 		setIsEditMealFoodModalVisible(false);
 		setMealFood(undefined);
-	}
+	};
 
 	const closeAddModal = () => {
 		setIsAddFoodModalVisible(false);
-	}
+	};
 
 	const navigation = useNavigation();
 
 	return (
-		<PaperProvider theme={DefaultTheme}>
-			<SafeAreaView>
-				<KeyboardAvoidingView
-					behavior={Platform.OS === "ios" ? "padding" : undefined}
-				>
-					{}
-					<Header />
-					<ScrollView>
-						{!store.meal || store.isLoading ? (
-							<Loading />
-						) : (
-							<Container>
-								<TitleContainer style={shadowStyles.style}>
-									<TitleText>Refeição</TitleText>
-									<MealNameText>
-										{store.meal.name}
-									</MealNameText>
-								</TitleContainer>
+		<SafeAreaView>
+			<KeyboardAvoidingView
+				behavior={Platform.OS === "ios" ? "padding" : undefined}
+			>
+				{}
+				<Header />
+				<ScrollView>
+					{!store.meal || store.isLoading ? (
+						<Loading />
+					) : (
+						<Container>
+							<TitleContainer style={shadowStyles.style}>
+								<TitleText>Refeição</TitleText>
+								<MealNameText>{store.meal.name}</MealNameText>
+							</TitleContainer>
 
-								<TotalConsumptionBox
-									energy_kcal={store.meal.energy_kcal}
-									carbs={store.meal.carbs}
-									proteins={store.meal.proteins}
-									fats={store.meal.fats}
-								/>
-
-								{store.meal.mealFoods.map((mealFood) => (
-									<FoodCard
-										key={mealFood.id}
-										mealFood={mealFood}
-										deleteMealFood={() => {
-											store.deleteMealFood(
-												mealFood.id
-											);
-										}}
-										editMealFood={() => {
-											setMealFood(mealFood);
-											setIsEditMealFoodModalVisible(true);
-										}}
-									/>
-								))}
-								{/* Edit Meal Food Modal */}
-								<Portal>
-									<QuantityFoodModal
-										meal={store.meal}
-										isVisible={isEditMealFoodModalVisible}
-										closeModal={closeEditModal}
-										mode="editMealFood"
-										initialMealFood={selectedMealFood}
-										handleAddFood={handleAddFood}
-										handleEditFood={handleEditFood}
-										onSubmit={store.loadMeal}
-									/>
-								</Portal>
-								{/*Add Meal Food Modal */}
-								<Portal>
-									<QuantityFoodModal
-										meal={store.meal}
-										isVisible={isAddFoodModalVisible}
-										closeModal={closeAddModal}
-										mode="addMealFood"
-										handleAddFood={handleAddFood}
-										handleEditFood={handleEditFood}
-										onSubmit={store.loadMeal}
-									/>
-								</Portal>
-							</Container>
-						)}
-					</ScrollView>
-
-					<BottomButtonsBox>
-						<GoBackButton
-							style={shadowStyles.style}
-							onPress={() => {
-								navigation.navigate("DailyDiet");
-							}}
-						>
-							<AntDesign name="back" size={30} color="#76c7c5" />
-							<AddMealButtonText>Dieta</AddMealButtonText>
-						</GoBackButton>
-
-						<AddFoodButton
-							style={shadowStyles.style}
-							onPress={() => {
-								setIsAddFoodModalVisible(true);
-							}}
-						>
-							<AntDesign
-								name="pluscircleo"
-								size={40}
-								color="#76c7c5"
+							<TotalConsumptionBox
+								energy_kcal={store.meal.energy_kcal}
+								carbs={store.meal.carbs}
+								proteins={store.meal.proteins}
+								fats={store.meal.fats}
 							/>
-							<AddMealButtonText>
-								Adicionar {"\n"} alimento
-							</AddMealButtonText>
-						</AddFoodButton>
-					</BottomButtonsBox>
-				</KeyboardAvoidingView>
-				{/* Add Food Modal */}
-				<Modal
-					visible={isAddFoodModalVisible}
-					onDismiss={() => {
-						setIsAddFoodModalVisible(false);
-					}}
-				>
-					<View>
-						<Text>Teste</Text>
-					</View>
-				</Modal>
-			</SafeAreaView>
-		</PaperProvider>
+
+							{store.meal.mealFoods.map((mealFood) => (
+								<FoodCard
+									key={mealFood.id}
+									mealFood={mealFood}
+									deleteMealFood={() => {
+										store.deleteMealFood(mealFood.id);
+									}}
+									editMealFood={() => {
+										setMealFood(mealFood);
+										setIsEditMealFoodModalVisible(true);
+									}}
+								/>
+							))}
+							{/* Edit Meal Food Modal */}
+							<Portal>
+								<QuantityFoodModal
+									meal={store.meal}
+									isVisible={isEditMealFoodModalVisible}
+									closeModal={closeEditModal}
+									mode="editMealFood"
+									initialMealFood={selectedMealFood}
+									handleAddFood={handleAddFood}
+									handleEditFood={handleEditFood}
+									onSubmit={store.loadMeal}
+								/>
+							</Portal>
+							{/*Add Meal Food Modal */}
+							<Portal>
+								<QuantityFoodModal
+									meal={store.meal}
+									isVisible={isAddFoodModalVisible}
+									closeModal={closeAddModal}
+									mode="addMealFood"
+									handleAddFood={handleAddFood}
+									handleEditFood={handleEditFood}
+									onSubmit={store.loadMeal}
+								/>
+							</Portal>
+						</Container>
+					)}
+				</ScrollView>
+
+				<BottomButtonsBox>
+					<GoBackButton
+						style={shadowStyles.style}
+						onPress={() => {
+							navigation.navigate("DailyDiet");
+						}}
+					>
+						<AntDesign name="back" size={30} color="#76c7c5" />
+						<AddMealButtonText>Dieta</AddMealButtonText>
+					</GoBackButton>
+
+					<AddFoodButton
+						style={shadowStyles.style}
+						onPress={() => {
+							setIsAddFoodModalVisible(true);
+						}}
+					>
+						<AntDesign
+							name="pluscircleo"
+							size={40}
+							color="#76c7c5"
+						/>
+						<AddMealButtonText>
+							Adicionar {"\n"} alimento
+						</AddMealButtonText>
+					</AddFoodButton>
+				</BottomButtonsBox>
+			</KeyboardAvoidingView>
+			{/* Add Food Modal */}
+			<Modal
+				visible={isAddFoodModalVisible}
+				onDismiss={() => {
+					setIsAddFoodModalVisible(false);
+				}}
+			>
+				<View>
+					<Text>Teste</Text>
+				</View>
+			</Modal>
+		</SafeAreaView>
 	);
 });

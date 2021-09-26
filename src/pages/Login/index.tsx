@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { Keyboard, Platform, Text } from "react-native";
-import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 import { Feather } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useForm, Controller } from "react-hook-form";
@@ -55,130 +54,119 @@ export const Login: React.FC = () => {
 	};
 
 	return (
-		<PaperProvider theme={DefaultTheme}>
-			<SafeAreaView>
-				<KeyboardAvoidingView
-					behavior={Platform.OS === "ios" ? "padding" : undefined}
-				>
-					<ScrollView>
-						<TouchableWithoutFeedback
-							style={{
-								backgroundColor: "#fff",
-								flex: 1,
-								alignItems: "center",
-							}}
-							onPress={Keyboard.dismiss}
-							accessible={false}
-						>
-							<ContentContainer>
-								<LogoImage
-									source={logoImg}
-									resizeMode="contain"
-								/>
-								<LogoText>
-									daily
-									<Text style={{ color: "#76C7C5" }}>
-										Fit
-									</Text>
-								</LogoText>
+		<SafeAreaView>
+			<KeyboardAvoidingView
+				behavior={Platform.OS === "ios" ? "padding" : undefined}
+			>
+				<ScrollView>
+					<TouchableWithoutFeedback
+						style={{
+							backgroundColor: "#fff",
+							flex: 1,
+							alignItems: "center",
+						}}
+						onPress={Keyboard.dismiss}
+						accessible={false}
+					>
+						<ContentContainer>
+							<LogoImage source={logoImg} resizeMode="contain" />
+							<LogoText>
+								daily
+								<Text style={{ color: "#76C7C5" }}>Fit</Text>
+							</LogoText>
 
-								<Title>Faça seu login</Title>
+							<Title>Faça seu login</Title>
 
-								<Controller
-									control={control}
-									name="email"
-									defaultValue=""
-									render={({ value, onChange }) => {
-										return (
-											<Input
-												label="E-mail"
-												mode="outlined"
-												autoCapitalize="none"
-												value={value}
-												theme={inputTheme}
-												onChangeText={(value) =>
-													onChange(value)
-												}
-												error={!!errors.email?.message}
-											/>
-										);
-									}}
-								/>
-								{errors.email?.message ? (
-									<ErrorText>
-										{errors.email?.message}
-									</ErrorText>
-								) : null}
+							<Controller
+								control={control}
+								name="email"
+								defaultValue=""
+								render={({ value, onChange }) => {
+									return (
+										<Input
+											label="E-mail"
+											mode="outlined"
+											autoCapitalize="none"
+											value={value}
+											theme={inputTheme}
+											onChangeText={(value) =>
+												onChange(value)
+											}
+											error={!!errors.email?.message}
+										/>
+									);
+								}}
+							/>
+							{errors.email?.message ? (
+								<ErrorText>{errors.email?.message}</ErrorText>
+							) : null}
 
-								<Controller
-									control={control}
-									name="password"
-									defaultValue=""
-									render={({ value, onChange }) => {
-										return (
-											<Input
-												label="Senha"
-												mode="outlined"
-												autoCapitalize="none"
-												theme={inputTheme}
-												value={value}
-												secureTextEntry={true}
-												onChangeText={(value) =>
-													onChange(value)
-												}
-												error={
-													!!errors.password?.message
-												}
-											/>
-										);
-									}}
-								/>
+							<Controller
+								control={control}
+								name="password"
+								defaultValue=""
+								render={({ value, onChange }) => {
+									return (
+										<Input
+											label="Senha"
+											mode="outlined"
+											autoCapitalize="none"
+											theme={inputTheme}
+											value={value}
+											secureTextEntry={true}
+											onChangeText={(value) =>
+												onChange(value)
+											}
+											error={!!errors.password?.message}
+										/>
+									);
+								}}
+							/>
 
-								{errors.password?.message ? (
-									<ErrorText>
-										{errors.password?.message}
-									</ErrorText>
-								) : null}
+							{errors.password?.message ? (
+								<ErrorText>
+									{errors.password?.message}
+								</ErrorText>
+							) : null}
 
-								<Button
+							<Button
+								onPress={() => {
+									handleSubmit(onSubmit)();
+								}}
+							>
+								<ButtonText>Entrar</ButtonText>
+							</Button>
+							<LinksContainer>
+								<LinkButton
 									onPress={() => {
-										handleSubmit(onSubmit)();
+										navigation.navigate("SignUp");
 									}}
 								>
-									<ButtonText>Entrar</ButtonText>
-								</Button>
-								<LinksContainer>
-									<LinkButton
-										onPress={() => {
-											navigation.navigate("SignUp");
-										}}
-									>
-										<Feather
-											name="log-in"
-											size={24}
-											color="#9CA9A7"
-										/>
-										<LinkText>Criar conta</LinkText>
-									</LinkButton>
+									<Feather
+										name="log-in"
+										size={24}
+										color="#9CA9A7"
+									/>
+									<LinkText>Criar conta</LinkText>
+								</LinkButton>
 
-									<LinkButton
-										onPress={() => {
-											navigation.navigate("ForgotPassword");
-										}}
-									>
-										<Feather
-											name="lock"
-											size={24}
-											color="#9CA9A7"
-										/>
-										<LinkText>Esqueci minha senha</LinkText>
-									</LinkButton>
-								</LinksContainer>
-							</ContentContainer>
-						</TouchableWithoutFeedback>
-					</ScrollView>
-				</KeyboardAvoidingView>
-			</SafeAreaView>
-		</PaperProvider>
+								<LinkButton
+									onPress={() => {
+										navigation.navigate("ForgotPassword");
+									}}
+								>
+									<Feather
+										name="lock"
+										size={24}
+										color="#9CA9A7"
+									/>
+									<LinkText>Esqueci minha senha</LinkText>
+								</LinkButton>
+							</LinksContainer>
+						</ContentContainer>
+					</TouchableWithoutFeedback>
+				</ScrollView>
+			</KeyboardAvoidingView>
+		</SafeAreaView>
 	);
 };

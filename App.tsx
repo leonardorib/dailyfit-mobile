@@ -4,6 +4,10 @@ import Constants from 'expo-constants';
 import AppLoading from "expo-app-loading";
 import { NavigationContainer } from "@react-navigation/native";
 import FlashMessage from "react-native-flash-message";
+import {
+	DefaultTheme,
+	Provider as PaperProvider,
+} from "react-native-paper";
 import Routes from "./src/routes";
 import { AuthProvider } from "./src/contexts/auth";
 
@@ -27,8 +31,10 @@ export default function App() {
   return (
     <NavigationContainer>
       <AuthProvider>
-        <Routes />
-        <StatusBar style="dark" />
+	    <PaperProvider theme={DefaultTheme}>
+          <Routes />
+          <StatusBar style="dark" />
+	    </PaperProvider>
       </AuthProvider>
 	  <FlashMessage
 		position="top"
