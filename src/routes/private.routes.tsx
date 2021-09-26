@@ -2,7 +2,7 @@ import React from "react";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { createStackNavigator } from "@react-navigation/stack";
 
-import { DailyDiet, Profile, EditMeal, EditPassword } from "../pages";
+import { DailyDiet, Profile, EditMeal, EditPassword } from "../screens";
 import { Drawer as CustomDrawer } from "../components";
 
 const PrivateRoutesDrawer = createDrawerNavigator();

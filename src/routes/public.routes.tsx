@@ -1,5 +1,5 @@
 import React from "react";
-import { Login, SignUp, ForgotPassword, ResetPassword } from "../pages";
+import { Login, SignUp, ForgotPassword, ResetPassword } from "../screens";
 
 import { createStackNavigator } from "@react-navigation/stack";
 
