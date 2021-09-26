@@ -7,3 +7,4 @@ export { TotalConsumptionBox } from "./TotalConsumptionBox";
 export { QuantityInputForm } from "./QuantityInputForm";
 export { QuantityFormButtons } from "./QuantityFormButtons";
 export { DateSelector } from "./DateSelector";
+export { BottomFadeout } from "./BottomFadeout";
