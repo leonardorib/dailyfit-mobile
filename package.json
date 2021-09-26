@@ -24,6 +24,7 @@
     "expo-app-loading": "^1.1.2",
     "expo-constants": "~11.0.1",
     "expo-font": "~9.2.1",
+    "expo-linear-gradient": "~9.2.0",
     "expo-status-bar": "~1.0.4",
     "jwt-decode": "^3.1.2",
     "mobx": "^6.1.8",
