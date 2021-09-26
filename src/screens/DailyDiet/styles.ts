@@ -23,6 +23,7 @@ export const KeyboardAvoidingView = styled.KeyboardAvoidingView`
 export const ScrollView = styled.ScrollView`
 	width: 100%;
 	flex: 1;
+	height: 100%;
 `;
 
 export const Container = styled.View`
@@ -52,6 +53,9 @@ export const AddMealButton = styled(RectButton)`
 	align-items: center;
 	justify-content: center;
 	border-radius: 10px;
+	position: absolute;
+	align-self: center;
+	bottom: 0;
 `;
 
 export const AddMealButtonText = styled.Text`

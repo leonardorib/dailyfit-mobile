@@ -11,6 +11,7 @@ import {
 	Loading,
 	TotalConsumptionBox,
 	DateSelector,
+	BottomFadeout,
 } from "../../components";
 import { Meal } from "./components";
 import Store from "./store";
@@ -86,7 +87,7 @@ export const DailyDiet: React.FC = observer(() => {
 				behavior={Platform.OS === "ios" ? "padding" : undefined}
 			>
 				<Header />
-				<ScrollView>
+				<ScrollView contentContainerStyle={{ paddingBottom: 80 }} >
 					<Container>
 						<DateSelector
 							date={selectedDate}
@@ -120,6 +121,7 @@ export const DailyDiet: React.FC = observer(() => {
 					</Container>
 				</ScrollView>
 
+				<BottomFadeout />
 				<AddMealButton
 					style={shadowStyles.style}
 					onPress={() => {

@@ -72,6 +72,10 @@ export const SelectedDateContainer = styled(RectButton)`
 
 export const BottomButtonsBox = styled.View`
 	flex-direction: row;
+	position: absolute;
+	bottom: 0;
+	justify-content: center;
+	width: 100%;
 `;
 
 export const GoBackButton = styled(RectButton)`

@@ -10,6 +10,7 @@ import {
 	FoodCard,
 	Loading,
 	QuantityFoodModal,
+	BottomFadeout,
 } from "../../components";
 import {
 	SafeAreaView,
@@ -92,7 +93,7 @@ export const EditMeal: React.FC<IProps> = observer(({ route }) => {
 			>
 				{}
 				<Header />
-				<ScrollView>
+				<ScrollView contentContainerStyle={{ paddingBottom: 80 }} >
 					{!store.meal || store.isLoading ? (
 						<Loading />
 					) : (
@@ -150,6 +151,8 @@ export const EditMeal: React.FC<IProps> = observer(({ route }) => {
 						</Container>
 					)}
 				</ScrollView>
+
+				<BottomFadeout />
 
 				<BottomButtonsBox>
 					<GoBackButton
