@@ -202,6 +202,7 @@ export const QuantityFoodModal: React.FC<IQuantityFoodModalProps> = observer(
 				onDismiss={() => {
 					closeModal();
 					setSelectedFood(undefined);
+					setNutrientsConsumed(initialNutrients);
 					setFoods([]);
 					setSearchInput("");
 				}}
