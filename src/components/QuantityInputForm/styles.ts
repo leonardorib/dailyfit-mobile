@@ -8,6 +8,11 @@ export const SelectFoodText = styled.Text`
 	margin-bottom: 10px;
 `;
 
+export const ContainerTouchable = styled.TouchableWithoutFeedback`
+	width: 100%;
+	height: 100%;
+`;
+
 export const Container = styled.View`
 	width: 95%;
 	margin-bottom: 20px;

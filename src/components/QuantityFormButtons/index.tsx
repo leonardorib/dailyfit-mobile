@@ -1,10 +1,7 @@
 import React from "react";
-import {
-	Container,
-	Button,
-	ButtonText,
-} from "./styles";
 import { observer } from "mobx-react";
+import { Keyboard } from "react-native";
+import { ContainerTouchable, Container, Button, ButtonText } from "./styles";
 
 interface IQuantityFormButtonsProps {
 	onConfirm: () => void;
@@ -16,17 +13,19 @@ export const QuantityFormButtons: React.FC<IQuantityFormButtonsProps> =
 		const { onConfirm, onCancel } = props;
 
 		return (
-			<Container>
-				<Button
-					onPress={onCancel}
-				>
-					<ButtonText>Cancelar</ButtonText>
-				</Button>
-				<Button
-					onPress={onConfirm}
-				>
-					<ButtonText>OK</ButtonText>
-				</Button>
-			</Container>
+			<ContainerTouchable
+				onPress={() => {
+					Keyboard.dismiss();
+				}}
+			>
+				<Container>
+					<Button onPress={onCancel}>
+						<ButtonText>Cancelar</ButtonText>
+					</Button>
+					<Button onPress={onConfirm}>
+						<ButtonText>OK</ButtonText>
+					</Button>
+				</Container>
+			</ContainerTouchable>
 		);
 	});
