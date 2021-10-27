@@ -7,7 +7,7 @@
 	>
 </p>
 
-## <p align="center"> Download now! </p>
+<h3 align="center" style="font-size: 18px">Download now!</h3>
 <p align="center">
 	<div align="center" >&nbsp&nbsp
 	<a
