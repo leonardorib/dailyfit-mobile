@@ -8,23 +8,21 @@
 </p>
 
 <p align="center">
-	<div style="display: flex;flex-wrap:wrap;width:100%;margin: 10px 0px 0px 0px;align-items: center;justify-content: center;" >
+	<div align="center" >&nbsp&nbsp
 	<a
 		href='https://play.google.com/store/apps/details?id=com.leonardo.dailyfit'
-		style="margin: 10px"
 	>
 		<img
-			style="max-height:70px;max-width: 100%;"
+		     	height="70px"
 			alt='Get it on Google Play'
 			src='https://user-images.githubusercontent.com/11333829/138985469-1d494125-a9bb-4713-b4cd-8fa093e643fe.png'
 		/>
-	</a>
+	</a>&nbsp&nbsp
 	<a
 		href='https://apps.apple.com/br/app/dailyfit/id1582308879#?platform=iphone'
-		style="margin: 10px"
 	>
 		<img
-			style="max-height:70px;max-width: 100%;"
+		     	height="70px"
 			alt='Download on the App Store'
 			src='https://user-images.githubusercontent.com/11333829/138984833-8d3614fc-6a20-4a9c-bb00-6933e52c8201.png'
 		/>
