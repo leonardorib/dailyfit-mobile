@@ -37,7 +37,7 @@ Designed to facilitate diets, counting total calories, proteins, carbohydrates a
 
 The database information about food nutrients is derived from TACO (Tabela Brasileira de Composição de Alimentos).
 
-This is an independent, personal and fully authoral project, with no commercial motivation. The main purpose is to practice and have fun ;).
+This is an independent, personal and **fully authoral** project, with no commercial motivation. The main purpose is to practice and have fun ;).
 ## :computer: Screenshots
 
 <p align="center">
