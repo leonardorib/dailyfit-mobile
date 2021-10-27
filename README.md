@@ -31,7 +31,14 @@
 	</div>
 </p>
 
-## :computer: Main Screens
+## :notebook_with_decorative_cover: What does it do?
+
+Designed to facilitate diets, counting total calories, proteins, carbohydrates and fats ingestion during the day, and mantaining a history of that data.
+
+The database information about food nutrients is derived from TACO (Tabela Brasileira de Composição de Alimentos).
+
+This is an independent and personal project, with no commercial motivation. The main purpose is to practice and have fun ;).
+## :computer: Screenshots
 
 <p align="center">
   <div align="center">
@@ -42,20 +49,9 @@
  </div>
 </p>
 
-## :gear: ... Under development
+## :gear: But... what about the backend?
 
-Currently in a very early development stage.
-
-
-A Node API for the application is also being developed. You can check it [here](https://github.com/leonardorib/dailyfit-api).
-
-## :notebook_with_decorative_cover: About
-
-Designed to facilitate diets, counting total calories, proteins, carbohydrates and fats ingestion during the day, and mantaining a history of that data.
-
-Inspired on applications such as MyFitnessPal.
-
-This is an independent and personal project, with no commercial motivation. The main purpose is to practice and have fun ;).
+A Node API for the application was also developed. You can check it [here](https://github.com/leonardorib/dailyfit-api).
 
 ## :rocket: Technologies
 
@@ -64,3 +60,11 @@ This is an independent and personal project, with no commercial motivation. The 
 - React Native
 - Expo
 - Styled-components
+
+## The author
+
+Made with :heart: by Leonardo Ribeiro. :brazil:
+
+Get in touch! :smiley:
+
+<div><a href="https://www.linkedin.com/in/leonardorib/"><img alt="LinkedIn" src="https://img.shields.io/badge/LinkedIn-leonardorib-blue?style=for-the-badge&logo=linkedin&labelColor=333333"></a></div>&nbsp&nbsp<div><a href="mailto:leonardo.rib@hotmail.com"><img alt="Email" src="https://img.shields.io/badge/Email-leonardo.rib@hotmail.com-blue?style=for-the-badge&logo=microsoft-outlook&labelColor=333333"></a></div>
