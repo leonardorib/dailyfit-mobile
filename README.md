@@ -1,6 +1,6 @@
 # <h1 align="center" style="color:#444540">daily<span style="color:#76C7C5">Fit</span></h1>
 
-# <p align="center"><img height="450px" src="https://user-images.githubusercontent.com/11333829/138800704-3858490d-7bd7-4e04-a02c-12b1b0f552e7.gif"></p>
+# <p align="center"><img height="450px" src="https://user-images.githubusercontent.com/11333829/138983525-7889271a-9e88-4c40-8122-dcff658920b6.gif"></p>
 
 ## :computer: Main Screens
 
