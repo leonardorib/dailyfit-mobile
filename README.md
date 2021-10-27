@@ -1,6 +1,36 @@
 # <h1 align="center" style="color:#444540">daily<span style="color:#76C7C5">Fit</span></h1>
 
-# <p align="center"><img height="450px" src="https://user-images.githubusercontent.com/11333829/138983525-7889271a-9e88-4c40-8122-dcff658920b6.gif"></p>
+<p align="center">
+	<img
+		height="450px"
+		src="https://user-images.githubusercontent.com/11333829/138983525-7889271a-9e88-4c40-8122-dcff658920b6.gif"
+	>
+</p>
+
+<p align="center">
+	<div style="display: flex;flex-wrap:wrap;width:100%;margin: 10px 0px 0px 0px;align-items: center;justify-content: center;" >
+	<a
+		href='https://play.google.com/store/apps/details?id=com.leonardo.dailyfit'
+		style="margin: 10px"
+	>
+		<img
+			style="max-height:70px;max-width: 100%;"
+			alt='Get it on Google Play'
+			src='https://user-images.githubusercontent.com/11333829/138985469-1d494125-a9bb-4713-b4cd-8fa093e643fe.png'
+		/>
+	</a>
+	<a
+		href='https://apps.apple.com/br/app/dailyfit/id1582308879#?platform=iphone'
+		style="margin: 10px"
+	>
+		<img
+			style="max-height:70px;max-width: 100%;"
+			alt='Download on the App Store'
+			src='https://user-images.githubusercontent.com/11333829/138984833-8d3614fc-6a20-4a9c-bb00-6933e52c8201.png'
+		/>
+	</a>
+	</div>
+</p>
 
 ## :computer: Main Screens
 
