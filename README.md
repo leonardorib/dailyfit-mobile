@@ -49,10 +49,6 @@ This is an independent and personal project, with no commercial motivation. The 
  </div>
 </p>
 
-## :gear: But... what about the backend?
-
-A Node API for the application was also developed. You can check it [here](https://github.com/leonardorib/dailyfit-api).
-
 ## :rocket: Technologies
 
 - Typescript
@@ -60,6 +56,9 @@ A Node API for the application was also developed. You can check it [here](https
 - React Native
 - Expo
 - Styled-components
+## :gear: But... what about the backend?
+
+A Node API for the application was also developed. You can check it [here](https://github.com/leonardorib/dailyfit-api).
 
 ## The author
 
